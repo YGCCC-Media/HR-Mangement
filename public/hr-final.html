@@ -416,9 +416,9 @@ function updateClock() {
 function clockIn() {
     userClockIn = new Date();
     const emp = employeeData.find(e => e.id === currentUser.id);
-    emp.clockIn = userClockIn.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    emp.clockIn = userClockIn.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
     document.getElementById('inTime').textContent = emp.clockIn;
-    alert('✅ Clocked in!');
+    alert('✅ Clocked in at ' + emp.clockIn);
 }
 
 function clockOut() {
@@ -428,12 +428,12 @@ function clockOut() {
     }
     userClockOut = new Date();
     const emp = employeeData.find(e => e.id === currentUser.id);
-    emp.clockOut = userClockOut.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    emp.clockOut = userClockOut.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
     document.getElementById('outTime').textContent = emp.clockOut;
     const h = Math.floor((userClockOut - userClockIn) / 3600000);
     const m = Math.floor(((userClockOut - userClockIn) % 3600000) / 60000);
     document.getElementById('hoursToday').textContent = h + 'h ' + m + 'm';
-    alert('✅ Clocked out!');
+    alert('✅ Clocked out at ' + emp.clockOut);
 }
 
 function openRequestModal() {
@@ -606,9 +606,20 @@ function rejectLeaveRequest() {
 
 function renderTimeApprovals() {
     const tbody = document.getElementById('timeApprovalsTable');
-    tbody.innerHTML = employeeData.map(e => `
-        <tr><td>${e.name}</td><td>${e.clockIn}</td><td>${e.clockOut || '--:--'}</td><td>${e.clockOut ? '8h' : '--'}</td></tr>
-    `).join('');
+    tbody.innerHTML = employeeData.map(e => {
+        let hours = '--';
+        if (e.clockIn && e.clockOut) {
+            const [inH, inM] = e.clockIn.split(':').map(Number);
+            const [outH, outM] = e.clockOut.split(':').map(Number);
+            const inMinutes = inH * 60 + inM;
+            const outMinutes = outH * 60 + outM;
+            const diff = outMinutes - inMinutes;
+            const h = Math.floor(diff / 60);
+            const m = diff % 60;
+            hours = h + 'h ' + m + 'm';
+        }
+        return `<tr><td>${e.name}</td><td>${e.clockIn}</td><td>${e.clockOut || '--:--'}</td><td>${hours}</td></tr>`;
+    }).join('');
 }
 
 function renderManagerApprovals() {
