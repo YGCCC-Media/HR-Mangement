@@ -3,254 +3,527 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HR Management Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>YGCCC Media - HR Management System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #3b82f6;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f3f4f6;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+        }
+        .login-page {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, #1e3a8a 100%);
+        }
+        .login-box {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+        .login-box h1 { text-align: center; font-size: 28px; margin-bottom: 10px; }
+        .login-box p { text-align: center; color: #6b7280; margin-bottom: 30px; font-size: 14px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-family: inherit; }
+        input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; background: var(--primary); color: white; }
+        .btn:hover { background: #2563eb; }
+        .error { background: #fee2e2; color: #7f1d1d; padding: 12px; border-radius: 8px; margin-bottom: 20px; display: none; }
+        .error.show { display: block; }
+        .info-box { background: #dbeafe; color: #1e40af; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; }
+
+        .dashboard-page { display: none; }
+        .dashboard-page.active { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background: var(--dark); color: white; padding: 20px; height: 100vh; overflow-y: auto; position: fixed; }
+        .sidebar h2 { font-size: 20px; margin-bottom: 20px; }
+        .user-info { background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; }
+        .user-info .name { font-weight: 600; margin-bottom: 5px; }
+        .nav { display: flex; flex-direction: column; gap: 10px; }
+        .nav-btn { padding: 12px 16px; border: none; background: rgba(255, 255, 255, 0.1); color: white; border-radius: 8px; cursor: pointer; text-align: left; font-size: 14px; transition: all 0.3s; }
+        .nav-btn:hover { background: rgba(255, 255, 255, 0.2); }
+        .nav-btn.active { background: var(--primary); }
+        .admin-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); display: none; }
+        .admin-section.active { display: block; }
+        .logout-btn { width: 100%; padding: 12px; background: var(--danger); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 20px; }
+        .main-content { margin-left: 250px; flex: 1; padding: 30px; overflow-y: auto; }
+        h1 { font-size: 28px; margin-bottom: 30px; }
+        .section { display: none; }
+        .section.active { display: block; }
+        .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { padding: 12px; text-align: left; font-weight: 600; background: var(--light); border-bottom: 2px solid #e5e7eb; }
+        td { padding: 12px; border-bottom: 1px solid #e5e7eb; }
+        tr:hover { background: var(--light); }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+        .badge-admin { background: #fef3c7; color: #92400e; }
+        .badge-employee { background: #d1fae5; color: #065f46; }
+        .btn-small { padding: 6px 12px; font-size: 12px; width: auto; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; margin-right: 5px; }
+        .btn-small.danger { background: var(--danger); }
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; border-radius: 12px; padding: 30px; max-width: 500px; width: 90%; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); }
+        .modal-header { font-size: 20px; font-weight: 600; margin-bottom: 20px; }
+        .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="logo">📊 HR Dashboard</div>
-            <nav class="nav">
-                <button class="nav-item active" onclick="switchSection('dashboard')">Dashboard</button>
-                <button class="nav-item" onclick="switchSection('clock')">Clock In/Out</button>
-                <button class="nav-item" onclick="switchSection('timeoff')">Time Off</button>
-                <button class="nav-item" onclick="switchSection('attendance')">Attendance</button>
-                <button class="nav-item" onclick="switchSection('employees')">Employees</button>
-                <button class="nav-item" onclick="switchSection('reports')">Reports</button>
-            </nav>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage" class="login-page">
+    <div class="login-box">
+        <h1>🏢 YGCCC Media</h1>
+        <p>HR Management System</p>
+        <div class="info-box"><strong>Password:</strong> password123 for all</div>
+        <div id="errorMsg" class="error"></div>
+        <div class="form-group">
+            <label>Select Employee:</label>
+            <select id="employeeSelect">
+                <option value="">-- Choose Employee --</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Password:</label>
+            <input type="password" id="passwordInput" value="password123">
+        </div>
+        <button class="btn" onclick="handleLogin()">Sign In</button>
+    </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboardPage" class="dashboard-page">
+    <div class="sidebar">
+        <h2>📊 HR System</h2>
+        <div class="user-info">
+            <div class="name" id="userName">User</div>
+            <div id="userRole">Employee</div>
         </div>
 
-        <!-- Main Content -->
-        <div class="main">
-            <div class="header">
-                <h1 id="page-title">Dashboard</h1>
-                <div class="user-info">
-                    <div class="avatar">JD</div>
-                    <div>
-                        <div style="font-weight: 600;">John Doe</div>
-                        <div style="font-size: 12px; color: #6b7280;">HR Manager</div>
-                    </div>
-                </div>
-            </div>
+        <nav class="nav">
+            <button class="nav-btn active" onclick="switchPage('dashboard')">📊 Dashboard</button>
+            <button class="nav-btn" onclick="switchPage('clock')">⏰ Clock In/Out</button>
+            <button class="nav-btn" onclick="switchPage('timeoff')">🗓️ Time Off</button>
+        </nav>
 
-            <!-- Dashboard Section -->
-            <div id="dashboard" class="section active">
-                <div class="dashboard-grid">
-                    <div class="stat-box">
-                        <div class="stat-label">Total Employees</div>
-                        <div class="stat-value" id="total-employees">12</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Clocked In Today</div>
-                        <div class="stat-value" id="clocked-in-count">8</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">On Time Off</div>
-                        <div class="stat-value" id="on-timeoff-count">2</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Average Hours</div>
-                        <div class="stat-value" id="avg-hours">8.2</div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-title">Today's Status</div>
-                    <div class="table-responsive">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Employee</th>
-                                    <th>Status</th>
-                                    <th>Clock In</th>
-                                    <th>Clock Out</th>
-                                    <th>Hours</th>
-                                </tr>
-                            </thead>
-                            <tbody id="today-status">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Clock In/Out Section -->
-            <div id="clock" class="section">
-                <div class="clock-section">
-                    <div class="clock-box">
-                        <div class="status-badge status-clocked-out" id="current-status">Not Clocked In</div>
-                        <div class="time-display" id="current-time">00:00:00</div>
-                        <button class="btn btn-success" onclick="clockIn()">Clock In</button>
-                        <button class="btn btn-danger" onclick="clockOut()" style="margin-left: 10px;">Clock Out</button>
-                    </div>
-                    <div class="clock-box">
-                        <div style="margin-bottom: 15px;">
-                            <h3 style="margin-bottom: 10px;">Today's Hours</h3>
-                            <div style="font-size: 28px; font-weight: bold; color: var(--secondary);" id="today-hours">0h 0m</div>
-                        </div>
-                        <div style="text-align: left; background: var(--light); padding: 15px; border-radius: 8px;">
-                            <div style="margin-bottom: 10px;">
-                                <span style="font-weight: 600;">Clock In:</span> <span id="display-clock-in">--:--</span>
-                            </div>
-                            <div>
-                                <span style="font-weight: 600;">Clock Out:</span> <span id="display-clock-out">--:--</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Time Off Section -->
-            <div id="timeoff" class="section">
-                <div class="card">
-                    <div class="card-title">Time Off Requests</div>
-                    <button class="btn btn-primary" onclick="openTimeOffModal()">Request Time Off</button>
-                    <div style="margin-top: 20px;">
-                        <div class="table-responsive">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Employee</th>
-                                        <th>Type</th>
-                                        <th>Start Date</th>
-                                        <th>End Date</th>
-                                        <th>Days</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="timeoff-list">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Attendance Section -->
-            <div id="attendance" class="section">
-                <div class="card">
-                    <div class="card-title">Attendance Overview</div>
-                    <div class="table-responsive">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Employee</th>
-                                    <th>Present Days</th>
-                                    <th>Absent Days</th>
-                                    <th>Attendance Rate</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="attendance-list">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Employees Section -->
-            <div id="employees" class="section">
-                <div class="card">
-                    <div class="card-title">Employee Directory</div>
-                    <button class="btn btn-primary" onclick="openEmployeeModal()">Add Employee</button>
-                    <div style="margin-top: 20px;" id="employee-list">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Reports Section -->
-            <div id="reports" class="section">
-                <div class="dashboard-grid">
-                    <div class="card">
-                        <div class="card-title">Monthly Report</div>
-                        <div style="margin-bottom: 15px;">
-                            <label>Select Month:</label>
-                            <input type="month" id="report-month" value="2026-08">
-                        </div>
-                        <button class="btn btn-primary" onclick="generateReport()">Generate Report</button>
-                        <div style="margin-top: 20px;" id="report-content"></div>
-                    </div>
-                </div>
-            </div>
+        <div id="adminPanel" class="admin-section">
+            <div style="font-size: 12px; font-weight: 600; margin-bottom: 10px; opacity: 0.7;">ADMIN ONLY</div>
+            <button class="nav-btn" onclick="switchPage('manage')">✏️ Manage Employees</button>
+            <button class="nav-btn" onclick="switchPage('approvals')">✅ Leave Approvals</button>
         </div>
+
+        <button class="logout-btn" onclick="handleLogout()">Logout</button>
     </div>
 
-    <!-- Modal: Time Off Request -->
-    <div id="timeoffModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">Request Time Off</div>
-            <div class="form-group">
-                <label>Employee:</label>
-                <select id="timeoff-employee">
-                    <option>-- Select Employee --</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Type:</label>
-                <select id="timeoff-type">
-                    <option>Vacation</option>
-                    <option>Sick Leave</option>
-                    <option>Personal</option>
-                    <option>Other</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Start Date:</label>
-                <input type="date" id="timeoff-start">
-            </div>
-            <div class="form-group">
-                <label>End Date:</label>
-                <input type="date" id="timeoff-end">
-            </div>
-            <div class="form-group">
-                <label>Reason:</label>
-                <textarea id="timeoff-reason" rows="3"></textarea>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeTimeOffModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="submitTimeOff()">Submit</button>
+    <div class="main-content">
+        <!-- DASHBOARD SECTION -->
+        <div id="dashboard" class="section active">
+            <h1>Dashboard</h1>
+            <div class="card">
+                <h2>Welcome, <span id="dashboardName">User</span>!</h2>
+                <p style="color: #6b7280; margin-top: 10px;">Role: <strong id="dashboardRole">Employee</strong></p>
             </div>
         </div>
-    </div>
 
-    <!-- Modal: Add Employee -->
-    <div id="employeeModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">Add Employee</div>
-            <div class="form-group">
-                <label>Name:</label>
-                <input type="text" id="emp-name" placeholder="Full Name">
-            </div>
-            <div class="form-group">
-                <label>Email:</label>
-                <input type="email" id="emp-email" placeholder="Email Address">
-            </div>
-            <div class="form-group">
-                <label>Position:</label>
-                <input type="text" id="emp-position" placeholder="Job Position">
-            </div>
-            <div class="form-group">
-                <label>Department:</label>
-                <select id="emp-department">
-                    <option>HR</option>
-                    <option>Engineering</option>
-                    <option>Sales</option>
-                    <option>Marketing</option>
-                    <option>Operations</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Vacation Days:</label>
-                <input type="number" id="emp-vacation" placeholder="20" value="20">
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeEmployeeModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="submitEmployee()">Add Employee</button>
+        <!-- CLOCK IN/OUT SECTION -->
+        <div id="clock" class="section">
+            <h1>Clock In/Out</h1>
+            <div class="card">
+                <div style="font-size: 48px; font-weight: bold; text-align: center; margin: 30px 0;" id="clockTime">00:00:00</div>
+                <div style="text-align: center;">
+                    <button class="btn" style="width: auto; padding: 12px 30px; margin-right: 10px;" onclick="clockIn()">✓ Clock In</button>
+                    <button class="btn" style="width: auto; padding: 12px 30px; background: var(--danger);" onclick="clockOut()">✕ Clock Out</button>
+                </div>
+                <div style="margin-top: 30px; padding: 20px; background: var(--light); border-radius: 8px;">
+                    <p><strong>Clock In:</strong> <span id="inTime">--:--</span></p>
+                    <p><strong>Clock Out:</strong> <span id="outTime">--:--</span></p>
+                    <p><strong>Hours Today:</strong> <span id="hoursToday">0h 0m</span></p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <script src="app.js"></script>
+        <!-- TIME OFF SECTION -->
+        <div id="timeoff" class="section">
+            <h1>Time Off</h1>
+            <div class="card">
+                <button class="btn" style="width: auto; margin-bottom: 20px;" onclick="openTimeOffModal()">+ Request Time Off</button>
+                <div id="timeoffRequests"></div>
+            </div>
+        </div>
+
+        <!-- ADMIN: MANAGE EMPLOYEES -->
+        <div id="manage" class="section">
+            <h1>Manage Employees</h1>
+            <div class="card">
+                <button class="btn" style="width: auto; margin-bottom: 20px;" onclick="openAddEmployeeModal()">+ Add Employee</button>
+                <table>
+                    <thead>
+                        <tr><th>Name</th><th>Department</th><th>Position</th><th>Role</th><th>Action</th></tr>
+                    </thead>
+                    <tbody id="manageTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ADMIN: APPROVALS -->
+        <div id="approvals" class="section">
+            <h1>Leave Approvals</h1>
+            <div class="card" id="approvalsContainer"></div>
+        </div>
+    </div>
+</div>
+
+<!-- MODALS -->
+<div id="timeOffModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">Request Time Off</div>
+        <div class="form-group">
+            <label>Leave Type:</label>
+            <select id="leaveType">
+                <option>Vacation</option>
+                <option>Sick Leave</option>
+                <option>Personal</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Start Date:</label>
+            <input type="date" id="startDate">
+        </div>
+        <div class="form-group">
+            <label>End Date:</label>
+            <input type="date" id="endDate">
+        </div>
+        <div class="modal-footer">
+            <button class="btn" style="width: auto;" onclick="closeTimeOffModal()">Cancel</button>
+            <button class="btn" style="width: auto; background: var(--secondary);" onclick="submitTimeOff()">Submit</button>
+        </div>
+    </div>
+</div>
+
+<div id="addEmployeeModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">Add Employee</div>
+        <div class="form-group">
+            <label>Name:</label>
+            <input type="text" id="newEmpName" placeholder="Full Name">
+        </div>
+        <div class="form-group">
+            <label>Department:</label>
+            <input type="text" id="newEmpDept" placeholder="Department">
+        </div>
+        <div class="form-group">
+            <label>Position:</label>
+            <input type="text" id="newEmpPos" placeholder="Position">
+        </div>
+        <div class="form-group">
+            <label>Role:</label>
+            <select id="newEmpRole">
+                <option value="employee">Employee</option>
+                <option value="admin">Admin</option>
+            </select>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" style="width: auto;" onclick="closeAddEmployeeModal()">Cancel</button>
+            <button class="btn" style="width: auto; background: var(--secondary);" onclick="addEmployee()">Add</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const employeeData = [
+    { id: 1, name: 'George Yu', dept: 'Executive', position: 'CEO', role: 'admin', pass: 'password123' },
+    { id: 2, name: 'Lizzy Loren Jangao', dept: 'Finance', position: 'Accounting', role: 'employee', pass: 'password123' },
+    { id: 3, name: 'Karoline San Miguel', dept: 'YDS', position: 'Project Manager', role: 'employee', pass: 'password123' },
+    { id: 4, name: 'Myka Hosmillo', dept: 'YD', position: 'Outreach', role: 'employee', pass: 'password123' },
+    { id: 5, name: 'Muhammad Bin Taimur', dept: 'Engineering', position: 'Automations Engineer', role: 'employee', pass: 'password123' },
+    { id: 6, name: 'HR Manager', dept: 'HR', position: 'Manager', role: 'admin', pass: 'password123' },
+    { id: 7, name: 'Eryl Karl Agustin', dept: 'YDS & HR', position: 'Project Manager & HR', role: 'employee', pass: 'password123' },
+    { id: 8, name: 'Aditya Yata', dept: 'AHS', position: 'Project Manager', role: 'employee', pass: 'password123' },
+    { id: 9, name: 'Demir Dumanlar', dept: 'YGCCC', position: 'Operations Slate', role: 'employee', pass: 'password123' },
+    { id: 10, name: 'Ann', dept: 'Finance', position: 'Accounting Lead', role: 'employee', pass: 'password123' },
+    { id: 11, name: 'Konstantin', dept: 'AHS', position: 'Co-founder', role: 'admin', pass: 'password123' }
+];
+
+let currentUser = null;
+let leaveRequests = [];
+let userClockIn = null;
+let userClockOut = null;
+
+function populateEmployees() {
+    const select = document.getElementById('employeeSelect');
+    select.innerHTML = '<option value="">-- Choose Employee --</option>';
+    employeeData.forEach(emp => {
+        const option = document.createElement('option');
+        option.value = emp.id;
+        option.textContent = emp.name;
+        select.appendChild(option);
+    });
+}
+
+function handleLogin() {
+    const empId = document.getElementById('employeeSelect').value;
+    const password = document.getElementById('passwordInput').value;
+    const errorMsg = document.getElementById('errorMsg');
+
+    if (!empId) {
+        errorMsg.textContent = '⚠️ Please select an employee';
+        errorMsg.classList.add('show');
+        return;
+    }
+
+    const emp = employeeData.find(e => e.id == empId);
+    if (emp && emp.pass === password) {
+        currentUser = emp;
+        errorMsg.classList.remove('show');
+        showDashboard();
+    } else {
+        errorMsg.textContent = '❌ Invalid password';
+        errorMsg.classList.add('show');
+    }
+}
+
+function showDashboard() {
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('dashboardPage').classList.add('active');
+    document.getElementById('userName').textContent = currentUser.name;
+    document.getElementById('dashboardName').textContent = currentUser.name;
+    document.getElementById('dashboardRole').textContent = currentUser.role.toUpperCase();
+    document.getElementById('userRole').textContent = '👨‍💼 ' + (currentUser.role === 'admin' ? 'Admin' : 'Employee');
+
+    if (currentUser.role === 'admin') {
+        document.getElementById('adminPanel').classList.add('active');
+        renderManage();
+        renderApprovals();
+    } else {
+        document.getElementById('adminPanel').classList.remove('active');
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+}
+
+function handleLogout() {
+    currentUser = null;
+    document.getElementById('dashboardPage').classList.remove('active');
+    document.getElementById('loginPage').style.display = 'flex';
+    document.getElementById('employeeSelect').value = '';
+}
+
+function switchPage(pageId) {
+    const adminPages = ['manage', 'approvals'];
+    if (adminPages.includes(pageId) && currentUser.role !== 'admin') {
+        alert('❌ Admin only');
+        return;
+    }
+
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    event.target.classList.add('active');
+}
+
+function updateClock() {
+    const now = new Date();
+    document.getElementById('clockTime').textContent = now.toLocaleTimeString();
+}
+
+function clockIn() {
+    userClockIn = new Date();
+    const time = userClockIn.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
+    document.getElementById('inTime').textContent = time;
+    alert('✅ Clocked in at ' + time);
+}
+
+function clockOut() {
+    if (!userClockIn) {
+        alert('⚠️ Clock in first');
+        return;
+    }
+    userClockOut = new Date();
+    const time = userClockOut.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
+    document.getElementById('outTime').textContent = time;
+    const h = Math.floor((userClockOut - userClockIn) / 3600000);
+    const m = Math.floor(((userClockOut - userClockIn) % 3600000) / 60000);
+    document.getElementById('hoursToday').textContent = h + 'h ' + m + 'm';
+    alert('✅ Clocked out at ' + time);
+}
+
+function openTimeOffModal() {
+    document.getElementById('timeOffModal').classList.add('active');
+}
+
+function closeTimeOffModal() {
+    document.getElementById('timeOffModal').classList.remove('active');
+}
+
+function submitTimeOff() {
+    const type = document.getElementById('leaveType').value;
+    const start = document.getElementById('startDate').value;
+    const end = document.getElementById('endDate').value;
+
+    if (!start || !end) {
+        alert('⚠️ Please fill in all dates');
+        return;
+    }
+
+    leaveRequests.push({
+        id: leaveRequests.length + 1,
+        empId: currentUser.id,
+        empName: currentUser.name,
+        type: type,
+        start: start,
+        end: end,
+        status: 'pending',
+        requestDate: new Date().toLocaleDateString()
+    });
+
+    alert('✅ Time off request submitted!');
+    closeTimeOffModal();
+    renderTimeOff();
+}
+
+function renderTimeOff() {
+    const myRequests = leaveRequests.filter(r => r.empId === currentUser.id);
+    const container = document.getElementById('timeoffRequests');
+
+    if (myRequests.length === 0) {
+        container.innerHTML = '<p style="color: #6b7280;">No requests yet</p>';
+        return;
+    }
+
+    container.innerHTML = myRequests.map(r => `
+        <div style="padding: 15px; background: var(--light); border-radius: 8px; margin-bottom: 10px;">
+            <p><strong>${r.type}</strong> - ${r.start} to ${r.end}</p>
+            <p style="font-size: 12px; color: #6b7280;">Requested: ${r.requestDate}</p>
+            <span style="display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; background: #fef3c7; color: #92400e;">${r.status.toUpperCase()}</span>
+        </div>
+    `).join('');
+}
+
+function openAddEmployeeModal() {
+    document.getElementById('addEmployeeModal').classList.add('active');
+}
+
+function closeAddEmployeeModal() {
+    document.getElementById('addEmployeeModal').classList.remove('active');
+}
+
+function addEmployee() {
+    const name = document.getElementById('newEmpName').value.trim();
+    const dept = document.getElementById('newEmpDept').value.trim();
+    const pos = document.getElementById('newEmpPos').value.trim();
+    const role = document.getElementById('newEmpRole').value;
+
+    if (!name || !dept || !pos) {
+        alert('⚠️ Please fill in all fields');
+        return;
+    }
+
+    const newId = Math.max(...employeeData.map(e => e.id)) + 1;
+    employeeData.push({
+        id: newId,
+        name: name,
+        dept: dept,
+        position: pos,
+        role: role,
+        pass: 'password123'
+    });
+
+    alert('✅ Employee added!');
+    closeAddEmployeeModal();
+    populateEmployees();
+    renderManage();
+}
+
+function deleteEmployee(id) {
+    if (confirm('Delete this employee?')) {
+        const index = employeeData.findIndex(e => e.id === id);
+        if (index > -1) {
+            employeeData.splice(index, 1);
+            alert('✅ Employee deleted!');
+            populateEmployees();
+            renderManage();
+        }
+    }
+}
+
+function renderManage() {
+    const tbody = document.getElementById('manageTable');
+    tbody.innerHTML = employeeData.map(e => `
+        <tr>
+            <td>${e.name}</td>
+            <td>${e.dept}</td>
+            <td>${e.position}</td>
+            <td><span class="badge ${e.role === 'admin' ? 'badge-admin' : 'badge-employee'}">${e.role.toUpperCase()}</span></td>
+            <td><button class="btn-small danger" onclick="deleteEmployee(${e.id})">Delete</button></td>
+        </tr>
+    `).join('');
+}
+
+function renderApprovals() {
+    const pending = leaveRequests.filter(r => r.status === 'pending');
+    const container = document.getElementById('approvalsContainer');
+
+    if (pending.length === 0) {
+        container.innerHTML = '<p style="color: #6b7280;">No pending requests</p>';
+        return;
+    }
+
+    container.innerHTML = pending.map(r => `
+        <div style="padding: 15px; background: var(--light); border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <p><strong>${r.empName}</strong> - ${r.type}</p>
+                <p style="font-size: 12px; color: #6b7280;">${r.start} to ${r.end}</p>
+            </div>
+            <div>
+                <button class="btn-small" onclick="approveRequest(${r.id})">Approve</button>
+                <button class="btn-small danger" onclick="rejectRequest(${r.id})">Reject</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function approveRequest(id) {
+    const req = leaveRequests.find(r => r.id === id);
+    if (req) {
+        req.status = 'approved';
+        alert('✅ Request approved!');
+        renderApprovals();
+    }
+}
+
+function rejectRequest(id) {
+    const req = leaveRequests.find(r => r.id === id);
+    if (req) {
+        req.status = 'rejected';
+        alert('❌ Request rejected!');
+        renderApprovals();
+    }
+}
+
+window.onclick = (e) => {
+    const modals = ['timeOffModal', 'addEmployeeModal'];
+    modals.forEach(id => {
+        if (e.target === document.getElementById(id)) {
+            document.getElementById(id).classList.remove('active');
+        }
+    });
+};
+
+// Initialize
+populateEmployees();
+</script>
+
 </body>
 </html>
