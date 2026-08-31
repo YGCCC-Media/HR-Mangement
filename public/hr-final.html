@@ -780,9 +780,12 @@ function addNewEmployee() {
 
 function deleteEmployee(id) {
     const emp = employeeData.find(e => e.id === id);
-    if (!emp) return;
+    if (!emp) {
+        alert('Employee not found');
+        return;
+    }
 
-    if (confirm('Delete employee: ' + emp.name + '?')) {
+    if (confirm('⚠️ Delete employee: ' + emp.name + '?\n\nThis action cannot be undone.')) {
         // Check if deleted employee is currently logged in
         if (currentUser && currentUser.id === id) {
             alert('⚠️ Employee account deleted. You will be logged out.');
@@ -790,10 +793,19 @@ function deleteEmployee(id) {
             return;
         }
 
-        employeeData.splice(employeeData.indexOf(emp), 1);
+        // Remove from array
+        const index = employeeData.indexOf(emp);
+        if (index > -1) {
+            employeeData.splice(index, 1);
+        }
+
+        // Update dropdown
         populateEmployees();
-        alert('✅ Employee deleted: ' + emp.name);
+
+        // Update manage table
         renderManage();
+
+        alert('✅ Employee deleted: ' + emp.name + '\n✅ Login access revoked');
     }
 }
 
