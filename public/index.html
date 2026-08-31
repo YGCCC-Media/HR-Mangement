@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Management Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">📊 HR Dashboard</div>
+            <nav class="nav">
+                <button class="nav-item active" onclick="switchSection('dashboard')">Dashboard</button>
+                <button class="nav-item" onclick="switchSection('clock')">Clock In/Out</button>
+                <button class="nav-item" onclick="switchSection('timeoff')">Time Off</button>
+                <button class="nav-item" onclick="switchSection('attendance')">Attendance</button>
+                <button class="nav-item" onclick="switchSection('employees')">Employees</button>
+                <button class="nav-item" onclick="switchSection('reports')">Reports</button>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main">
+            <div class="header">
+                <h1 id="page-title">Dashboard</h1>
+                <div class="user-info">
+                    <div class="avatar">JD</div>
+                    <div>
+                        <div style="font-weight: 600;">John Doe</div>
+                        <div style="font-size: 12px; color: #6b7280;">HR Manager</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section active">
+                <div class="dashboard-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Total Employees</div>
+                        <div class="stat-value" id="total-employees">12</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Clocked In Today</div>
+                        <div class="stat-value" id="clocked-in-count">8</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">On Time Off</div>
+                        <div class="stat-value" id="on-timeoff-count">2</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Average Hours</div>
+                        <div class="stat-value" id="avg-hours">8.2</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Today's Status</div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Employee</th>
+                                    <th>Status</th>
+                                    <th>Clock In</th>
+                                    <th>Clock Out</th>
+                                    <th>Hours</th>
+                                </tr>
+                            </thead>
+                            <tbody id="today-status">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clock In/Out Section -->
+            <div id="clock" class="section">
+                <div class="clock-section">
+                    <div class="clock-box">
+                        <div class="status-badge status-clocked-out" id="current-status">Not Clocked In</div>
+                        <div class="time-display" id="current-time">00:00:00</div>
+                        <button class="btn btn-success" onclick="clockIn()">Clock In</button>
+                        <button class="btn btn-danger" onclick="clockOut()" style="margin-left: 10px;">Clock Out</button>
+                    </div>
+                    <div class="clock-box">
+                        <div style="margin-bottom: 15px;">
+                            <h3 style="margin-bottom: 10px;">Today's Hours</h3>
+                            <div style="font-size: 28px; font-weight: bold; color: var(--secondary);" id="today-hours">0h 0m</div>
+                        </div>
+                        <div style="text-align: left; background: var(--light); padding: 15px; border-radius: 8px;">
+                            <div style="margin-bottom: 10px;">
+                                <span style="font-weight: 600;">Clock In:</span> <span id="display-clock-in">--:--</span>
+                            </div>
+                            <div>
+                                <span style="font-weight: 600;">Clock Out:</span> <span id="display-clock-out">--:--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Time Off Section -->
+            <div id="timeoff" class="section">
+                <div class="card">
+                    <div class="card-title">Time Off Requests</div>
+                    <button class="btn btn-primary" onclick="openTimeOffModal()">Request Time Off</button>
+                    <div style="margin-top: 20px;">
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>Type</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Days</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="timeoff-list">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Section -->
+            <div id="attendance" class="section">
+                <div class="card">
+                    <div class="card-title">Attendance Overview</div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Employee</th>
+                                    <th>Present Days</th>
+                                    <th>Absent Days</th>
+                                    <th>Attendance Rate</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendance-list">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employees Section -->
+            <div id="employees" class="section">
+                <div class="card">
+                    <div class="card-title">Employee Directory</div>
+                    <button class="btn btn-primary" onclick="openEmployeeModal()">Add Employee</button>
+                    <div style="margin-top: 20px;" id="employee-list">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Section -->
+            <div id="reports" class="section">
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <div class="card-title">Monthly Report</div>
+                        <div style="margin-bottom: 15px;">
+                            <label>Select Month:</label>
+                            <input type="month" id="report-month" value="2026-08">
+                        </div>
+                        <button class="btn btn-primary" onclick="generateReport()">Generate Report</button>
+                        <div style="margin-top: 20px;" id="report-content"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Time Off Request -->
+    <div id="timeoffModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Request Time Off</div>
+            <div class="form-group">
+                <label>Employee:</label>
+                <select id="timeoff-employee">
+                    <option>-- Select Employee --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Type:</label>
+                <select id="timeoff-type">
+                    <option>Vacation</option>
+                    <option>Sick Leave</option>
+                    <option>Personal</option>
+                    <option>Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Start Date:</label>
+                <input type="date" id="timeoff-start">
+            </div>
+            <div class="form-group">
+                <label>End Date:</label>
+                <input type="date" id="timeoff-end">
+            </div>
+            <div class="form-group">
+                <label>Reason:</label>
+                <textarea id="timeoff-reason" rows="3"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeTimeOffModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="submitTimeOff()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add Employee -->
+    <div id="employeeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Add Employee</div>
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" id="emp-name" placeholder="Full Name">
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="emp-email" placeholder="Email Address">
+            </div>
+            <div class="form-group">
+                <label>Position:</label>
+                <input type="text" id="emp-position" placeholder="Job Position">
+            </div>
+            <div class="form-group">
+                <label>Department:</label>
+                <select id="emp-department">
+                    <option>HR</option>
+                    <option>Engineering</option>
+                    <option>Sales</option>
+                    <option>Marketing</option>
+                    <option>Operations</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Vacation Days:</label>
+                <input type="number" id="emp-vacation" placeholder="20" value="20">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEmployeeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="submitEmployee()">Add Employee</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

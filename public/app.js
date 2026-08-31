@@ -1,0 +1,303 @@
+// Sample Data
+let employees = [
+    { id: 1, name: 'Alice Johnson', email: 'alice@company.com', position: 'Engineer', dept: 'Engineering', vacationDays: 20, avatar: 'AJ', clockIn: '09:00', clockOut: '17:30', status: 'clocked-out' },
+    { id: 2, name: 'Bob Smith', email: 'bob@company.com', position: 'Designer', dept: 'Marketing', vacationDays: 18, avatar: 'BS', clockIn: '08:45', clockOut: null, status: 'clocked-in' },
+    { id: 3, name: 'Carol White', email: 'carol@company.com', position: 'Manager', dept: 'HR', vacationDays: 22, avatar: 'CW', clockIn: null, clockOut: null, status: 'timeoff' },
+    { id: 4, name: 'David Brown', email: 'david@company.com', position: 'Developer', dept: 'Engineering', vacationDays: 20, avatar: 'DB', clockIn: '09:15', clockOut: '17:45', status: 'clocked-out' },
+    { id: 5, name: 'Emma Davis', email: 'emma@company.com', position: 'Sales Rep', dept: 'Sales', vacationDays: 19, avatar: 'ED', clockIn: '09:30', clockOut: null, status: 'clocked-in' },
+    { id: 6, name: 'Frank Miller', email: 'frank@company.com', position: 'Analyst', dept: 'Operations', vacationDays: 21, avatar: 'FM', clockIn: '09:00', clockOut: '18:00', status: 'clocked-out' },
+    { id: 7, name: 'Grace Lee', email: 'grace@company.com', position: 'Engineer', dept: 'Engineering', vacationDays: 20, avatar: 'GL', clockIn: '09:00', clockOut: null, status: 'clocked-in' },
+    { id: 8, name: 'Henry Wilson', email: 'henry@company.com', position: 'Manager', dept: 'Sales', vacationDays: 23, avatar: 'HW', clockIn: null, clockOut: null, status: 'timeoff' },
+    { id: 9, name: 'Iris Taylor', email: 'iris@company.com', position: 'Coordinator', dept: 'HR', vacationDays: 20, avatar: 'IT', clockIn: '08:30', clockOut: '17:00', status: 'clocked-out' },
+    { id: 10, name: 'Jack Anderson', email: 'jack@company.com', position: 'Developer', dept: 'Engineering', vacationDays: 20, avatar: 'JA', clockIn: '09:45', clockOut: null, status: 'clocked-in' },
+    { id: 11, name: 'Karen Martinez', email: 'karen@company.com', position: 'Designer', dept: 'Marketing', vacationDays: 19, avatar: 'KM', clockIn: '09:00', clockOut: '18:00', status: 'clocked-out' },
+    { id: 12, name: 'Leo Thomas', email: 'leo@company.com', position: 'Engineer', dept: 'Engineering', vacationDays: 20, avatar: 'LT', clockIn: '08:45', clockOut: null, status: 'clocked-in' }
+];
+
+let timeOffs = [
+    { id: 1, employeeId: 3, employee: 'Carol White', type: 'Vacation', startDate: '2026-09-01', endDate: '2026-09-05', days: 5, status: 'Approved' },
+    { id: 2, employeeId: 8, employee: 'Henry Wilson', type: 'Sick Leave', startDate: '2026-08-31', endDate: '2026-08-31', days: 1, status: 'Approved' },
+    { id: 3, employeeId: 2, employee: 'Bob Smith', type: 'Personal', startDate: '2026-09-10', endDate: '2026-09-12', days: 3, status: 'Pending' }
+];
+
+let currentUser = { name: 'John Doe', role: 'HR Manager', avatar: 'JD' };
+let userClockIn = null;
+let userClockOut = null;
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    updateClock();
+    renderDashboard();
+    renderTodayStatus();
+    renderTimeOffList();
+    renderAttendanceList();
+    renderEmployeeList();
+    populateEmployeeSelects();
+    setInterval(updateClock, 1000);
+});
+
+// Navigation
+function switchSection(sectionId) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(sectionId).classList.add('active');
+    event.target.classList.add('active');
+
+    const titles = {
+        dashboard: 'Dashboard',
+        clock: 'Clock In/Out',
+        timeoff: 'Time Off Management',
+        attendance: 'Attendance Overview',
+        employees: 'Employee Directory',
+        reports: 'Reports'
+    };
+    document.getElementById('page-title').textContent = titles[sectionId];
+}
+
+// Clock Functions
+function updateClock() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString();
+    document.getElementById('current-time').textContent = timeString;
+}
+
+function clockIn() {
+    userClockIn = new Date();
+    document.getElementById('current-status').textContent = 'Clocked In';
+    document.getElementById('current-status').className = 'status-badge status-clocked-in';
+    document.getElementById('display-clock-in').textContent = userClockIn.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    alert('Clocked in at ' + userClockIn.toLocaleTimeString());
+}
+
+function clockOut() {
+    if (!userClockIn) {
+        alert('Please clock in first!');
+        return;
+    }
+    userClockOut = new Date();
+    document.getElementById('current-status').textContent = 'Clocked Out';
+    document.getElementById('current-status').className = 'status-badge status-clocked-out';
+    document.getElementById('display-clock-out').textContent = userClockOut.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+    const hours = Math.floor((userClockOut - userClockIn) / 3600000);
+    const minutes = Math.floor(((userClockOut - userClockIn) % 3600000) / 60000);
+    document.getElementById('today-hours').textContent = `${hours}h ${minutes}m`;
+    alert('Clocked out at ' + userClockOut.toLocaleTimeString());
+}
+
+// Render Functions
+function renderDashboard() {
+    const clockedInCount = employees.filter(e => e.status === 'clocked-in').length;
+    const timeoffCount = employees.filter(e => e.status === 'timeoff').length;
+    const avgHours = (8.2).toFixed(1);
+
+    document.getElementById('total-employees').textContent = employees.length;
+    document.getElementById('clocked-in-count').textContent = clockedInCount;
+    document.getElementById('on-timeoff-count').textContent = timeoffCount;
+    document.getElementById('avg-hours').textContent = avgHours;
+}
+
+function renderTodayStatus() {
+    const tbody = document.getElementById('today-status');
+    tbody.innerHTML = employees.map(emp => `
+        <tr>
+            <td>${emp.name}</td>
+            <td><span class="badge ${getBadgeClass(emp.status)}">${getStatusText(emp.status)}</span></td>
+            <td>${emp.clockIn || '--:--'}</td>
+            <td>${emp.clockOut || '--:--'}</td>
+            <td>${emp.clockOut ? '8h 30m' : '--'}</td>
+        </tr>
+    `).join('');
+}
+
+function renderTimeOffList() {
+    const tbody = document.getElementById('timeoff-list');
+    tbody.innerHTML = timeOffs.map(to => `
+        <tr>
+            <td>${to.employee}</td>
+            <td>${to.type}</td>
+            <td>${to.startDate}</td>
+            <td>${to.endDate}</td>
+            <td>${to.days}</td>
+            <td><span class="badge ${to.status === 'Approved' ? 'badge-success' : 'badge-warning'}">${to.status}</span></td>
+        </tr>
+    `).join('');
+}
+
+function renderAttendanceList() {
+    const tbody = document.getElementById('attendance-list');
+    tbody.innerHTML = employees.map(emp => {
+        const presentDays = Math.floor(Math.random() * 20) + 15;
+        const absentDays = 22 - presentDays;
+        const rate = ((presentDays / 22) * 100).toFixed(1);
+        return `
+            <tr>
+                <td>${emp.name}</td>
+                <td>${presentDays}</td>
+                <td>${absentDays}</td>
+                <td>${rate}%</td>
+                <td><span class="badge badge-success">Good</span></td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function renderEmployeeList() {
+    const container = document.getElementById('employee-list');
+    container.innerHTML = employees.map(emp => `
+        <div class="employee-card">
+            <div class="employee-info">
+                <div class="avatar">${emp.avatar}</div>
+                <div class="employee-details">
+                    <h3>${emp.name}</h3>
+                    <p>${emp.position} • ${emp.dept}</p>
+                    <p>${emp.email}</p>
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <div><strong>Vacation Days:</strong> ${emp.vacationDays}</div>
+                <button class="btn btn-secondary" style="margin-top: 10px; font-size: 12px;" onclick="alert('Edit: ${emp.name}')">Edit</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function populateEmployeeSelects() {
+    const select = document.getElementById('timeoff-employee');
+    select.innerHTML = '<option>-- Select Employee --</option>' + employees.map(emp =>
+        `<option value="${emp.id}">${emp.name}</option>`
+    ).join('');
+}
+
+function getBadgeClass(status) {
+    if (status === 'clocked-in') return 'badge-success';
+    if (status === 'timeoff') return 'badge-warning';
+    return 'badge-info';
+}
+
+function getStatusText(status) {
+    if (status === 'clocked-in') return 'Clocked In';
+    if (status === 'clocked-out') return 'Clocked Out';
+    return 'On Time Off';
+}
+
+// Time Off Modal
+function openTimeOffModal() {
+    document.getElementById('timeoffModal').classList.add('active');
+}
+
+function closeTimeOffModal() {
+    document.getElementById('timeoffModal').classList.remove('active');
+}
+
+function submitTimeOff() {
+    const empId = document.getElementById('timeoff-employee').value;
+    const employee = employees.find(e => e.id == empId);
+    if (!employee) {
+        alert('Please select an employee');
+        return;
+    }
+
+    const startDate = document.getElementById('timeoff-start').value;
+    const endDate = document.getElementById('timeoff-end').value;
+    const type = document.getElementById('timeoff-type').value;
+
+    if (!startDate || !endDate) {
+        alert('Please select both dates');
+        return;
+    }
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+
+    const newTimeOff = {
+        id: timeOffs.length + 1,
+        employeeId: empId,
+        employee: employee.name,
+        type: type,
+        startDate: startDate,
+        endDate: endDate,
+        days: days,
+        status: 'Pending'
+    };
+
+    timeOffs.push(newTimeOff);
+    renderTimeOffList();
+    closeTimeOffModal();
+    alert('Time off request submitted!');
+    document.getElementById('timeoffModal').querySelector('form')?.reset();
+}
+
+// Employee Modal
+function openEmployeeModal() {
+    document.getElementById('employeeModal').classList.add('active');
+}
+
+function closeEmployeeModal() {
+    document.getElementById('employeeModal').classList.remove('active');
+}
+
+function submitEmployee() {
+    const name = document.getElementById('emp-name').value;
+    const email = document.getElementById('emp-email').value;
+    const position = document.getElementById('emp-position').value;
+    const dept = document.getElementById('emp-department').value;
+    const vacation = parseInt(document.getElementById('emp-vacation').value) || 20;
+
+    if (!name || !email || !position) {
+        alert('Please fill in all fields');
+        return;
+    }
+
+    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+    const newEmployee = {
+        id: employees.length + 1,
+        name: name,
+        email: email,
+        position: position,
+        dept: dept,
+        vacationDays: vacation,
+        avatar: initials,
+        clockIn: null,
+        clockOut: null,
+        status: 'clocked-out'
+    };
+
+    employees.push(newEmployee);
+    renderEmployeeList();
+    renderDashboard();
+    populateEmployeeSelects();
+    closeEmployeeModal();
+    alert('Employee added successfully!');
+}
+
+// Reports
+function generateReport() {
+    const month = document.getElementById('report-month').value;
+    const reportContent = document.getElementById('report-content');
+
+    const totalHours = employees.reduce((sum) => sum + 160, 0);
+    const avgAttendance = 95.5;
+
+    reportContent.innerHTML = `
+        <div style="background: var(--light); padding: 15px; border-radius: 8px;">
+            <h3>Monthly Report - ${month}</h3>
+            <div style="margin-top: 15px;">
+                <p><strong>Total Employees:</strong> ${employees.length}</p>
+                <p><strong>Total Hours Worked:</strong> ${totalHours} hours</p>
+                <p><strong>Average Attendance Rate:</strong> ${avgAttendance}%</p>
+                <p><strong>Time Off Requests:</strong> ${timeOffs.filter(to => to.status === 'Approved').length} approved</p>
+            </div>
+            <button class="btn btn-primary" style="margin-top: 15px;" onclick="alert('Report downloaded!')">Download PDF</button>
+        </div>
+    `;
+}
+
+// Close modals on outside click
+window.onclick = (event) => {
+    const timeoffModal = document.getElementById('timeoffModal');
+    const employeeModal = document.getElementById('employeeModal');
+    if (event.target === timeoffModal) timeoffModal.classList.remove('active');
+    if (event.target === employeeModal) employeeModal.classList.remove('active');
+};
