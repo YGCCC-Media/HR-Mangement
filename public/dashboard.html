@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Management Dashboard - YGCCC Media</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3b82f6;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1f2937;
+            --light: #f3f4f6;
+            --border: #e5e7eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* LOGIN PAGE */
+        .login-container {
+            display: none;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, #1e3a8a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container.active {
+            display: flex;
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .login-header p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-success {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #7f1d1d;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* DASHBOARD */
+        .dashboard-container {
+            display: none;
+            min-height: 100vh;
+            background: var(--light);
+        }
+
+        .dashboard-container.active {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: var(--dark);
+            color: white;
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+
+        .user-badge .name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .user-badge .role {
+            font-size: 11px;
+            opacity: 0.8;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            background: transparent;
+            color: white;
+            font-size: 14px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active {
+            background: var(--primary);
+        }
+
+        .nav-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            opacity: 0.6;
+            margin-bottom: 10px;
+            padding: 0 16px;
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            background: var(--danger);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        .main {
+            margin-left: 250px;
+            flex: 1;
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: var(--dark);
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .clock-section {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .clock-box {
+            flex: 1;
+            min-width: 250px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .time-display {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 15px 0;
+            color: var(--dark);
+            font-family: 'Courier New', monospace;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .status-clocked-in {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-clocked-out {
+            background: #fee2e2;
+            color: #7f1d1d;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--light);
+        }
+
+        th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:hover {
+            background: var(--light);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: #7f1d1d;
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .employee-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border);
+        }
+
+        .employee-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .employee-details h3 {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .employee-details p {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-full {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .main {
+                margin-left: 200px;
+                padding: 15px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN PAGE -->
+    <div id="loginPage" class="login-container active">
+        <div class="login-box">
+            <div class="login-header">
+                <h1>🏢 YGCCC Media</h1>
+                <p>HR Management System</p>
+            </div>
+            <div id="loginError" class="error-message"></div>
+            <div class="form-group">
+                <label>Select Employee:</label>
+                <select id="loginSelect" onchange="updatePassword()">
+                    <option value="">-- Choose Employee --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Password:</label>
+                <input type="password" id="loginPassword" placeholder="Enter password">
+            </div>
+            <div style="font-size: 12px; color: #6b7280; margin-bottom: 20px;">
+                <p><strong>Demo Passwords:</strong></p>
+                <p>All employees: <code>password123</code></p>
+            </div>
+            <button class="btn btn-primary" onclick="login()">Sign In</button>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboardPage" class="dashboard-container">
+        <div class="sidebar">
+            <div class="logo">📊 HR System</div>
+            <div class="user-badge">
+                <div class="name" id="sidebarName">User</div>
+                <div class="role" id="sidebarRole">Employee</div>
+            </div>
+
+            <nav class="nav">
+                <button class="nav-item active" onclick="switchSection('dashboard')">Dashboard</button>
+                <button class="nav-item" onclick="switchSection('clock')">Clock In/Out</button>
+                <button class="nav-item" onclick="switchSection('employees')">Employees</button>
+            </nav>
+
+            <div id="adminNav" class="nav-section" style="display: none;">
+                <div class="nav-label">Admin Panel</div>
+                <button class="nav-item" onclick="switchSection('manage-employees')">Manage Employees</button>
+                <button class="nav-item" onclick="switchSection('time-approvals')">Time Approvals</button>
+            </div>
+
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="main">
+            <div class="header">
+                <h1 id="pageTitle">Dashboard</h1>
+            </div>
+
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section active">
+                <div class="dashboard-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Total Employees</div>
+                        <div class="stat-value" id="totalEmp">11</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Clocked In</div>
+                        <div class="stat-value" id="clockedInCount">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Clocked Out</div>
+                        <div class="stat-value" id="clockedOutCount">0</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Team Status</h2>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Department</th>
+                                    <th>Status</th>
+                                    <th>Clock In</th>
+                                    <th>Clock Out</th>
+                                </tr>
+                            </thead>
+                            <tbody id="statusTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clock In/Out Section -->
+            <div id="clock" class="section">
+                <div class="clock-section">
+                    <div class="clock-box">
+                        <div class="status-badge status-clocked-out" id="currentStatus">Not Clocked In</div>
+                        <div class="time-display" id="currentTime">00:00:00</div>
+                        <button class="btn btn-success" onclick="clockIn()">Clock In</button>
+                        <button class="btn btn-danger" onclick="clockOut()" style="margin-top: 10px;">Clock Out</button>
+                    </div>
+                    <div class="clock-box">
+                        <h3 style="margin-bottom: 10px;">Today's Hours</h3>
+                        <div style="font-size: 28px; font-weight: bold; color: var(--secondary);" id="todayHours">0h 0m</div>
+                        <div style="margin-top: 20px; text-align: left; background: var(--light); padding: 15px; border-radius: 8px;">
+                            <div style="margin-bottom: 10px;">
+                                <span style="font-weight: 600;">In:</span> <span id="displayIn">--:--</span>
+                            </div>
+                            <div>
+                                <span style="font-weight: 600;">Out:</span> <span id="displayOut">--:--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employees Section -->
+            <div id="employees" class="section">
+                <div class="card">
+                    <h2>Employee Directory</h2>
+                    <div id="employeeList"></div>
+                </div>
+            </div>
+
+            <!-- Manage Employees (Admin) -->
+            <div id="manage-employees" class="section">
+                <div class="card">
+                    <h2>Employee Management</h2>
+                    <button class="btn btn-primary" onclick="openAddEmployeeModal()" style="margin-bottom: 20px;">+ Add Employee</button>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Department</th>
+                                    <th>Position</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminEmployeeTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Time Approvals (Admin) -->
+            <div id="time-approvals" class="section">
+                <div class="card">
+                    <h2>Clock In/Out Approvals</h2>
+                    <div id="approvalsTable"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Employee Modal -->
+    <div id="addEmployeeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Add New Employee</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Full Name:</label>
+                    <input type="text" id="empName" placeholder="Full Name">
+                </div>
+                <div class="form-group">
+                    <label>Department:</label>
+                    <input type="text" id="empDept" placeholder="Department">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Position:</label>
+                    <input type="text" id="empPosition" placeholder="Position">
+                </div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <input type="password" id="empPassword" placeholder="password123">
+                </div>
+            </div>
+            <div class="form-group form-full">
+                <label>Role:</label>
+                <select id="empRole">
+                    <option value="employee">Employee</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAddEmployeeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="addEmployee()">Add Employee</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Time Modal -->
+    <div id="editTimeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Edit Clock Time</div>
+            <div class="form-group">
+                <label>Employee:</label>
+                <input type="text" id="editEmpName" disabled>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Clock In Time:</label>
+                    <input type="time" id="editClockIn">
+                </div>
+                <div class="form-group">
+                    <label>Clock Out Time:</label>
+                    <input type="time" id="editClockOut">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEditTimeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveClockTime()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Employee Database
+        let employees = [
+            { id: 1, name: 'George Yu', dept: 'Executive', position: 'CEO', password: 'password123', role: 'admin', avatar: 'GY', clockIn: '08:00', clockOut: '18:00', status: 'clocked-out' },
+            { id: 2, name: 'Lizzy Loren Jangao', dept: 'Finance', position: 'Accounting', password: 'password123', role: 'employee', avatar: 'LJ', clockIn: '09:00', clockOut: '17:30', status: 'clocked-out' },
+            { id: 3, name: 'Karoline San Miguel', dept: 'YDS', position: 'Project Manager', password: 'password123', role: 'employee', avatar: 'KM', clockIn: '09:15', clockOut: null, status: 'clocked-in' },
+            { id: 4, name: 'Myka Hosmillo', dept: 'YD', position: 'Outreach', password: 'password123', role: 'employee', avatar: 'MH', clockIn: '08:45', clockOut: null, status: 'clocked-in' },
+            { id: 5, name: 'Muhammad Bin Taimur', dept: 'Engineering', position: 'Automations Engineer', password: 'password123', role: 'employee', avatar: 'MT', clockIn: '09:30', clockOut: '18:00', status: 'clocked-out' },
+            { id: 6, name: 'Himaja Kosaraju', dept: 'HR', position: 'HR Manager', password: 'password123', role: 'admin', avatar: 'HK', clockIn: '09:00', clockOut: null, status: 'clocked-in' },
+            { id: 7, name: 'Eryl Karl Agustin', dept: 'YDS & HR', position: 'Project Manager & HR', password: 'password123', role: 'admin', avatar: 'EA', clockIn: '09:45', clockOut: '17:45', status: 'clocked-out' },
+            { id: 8, name: 'Aditya Yata', dept: 'AHS', position: 'Project Manager', password: 'password123', role: 'employee', avatar: 'AY', clockIn: '08:30', clockOut: null, status: 'clocked-in' },
+            { id: 9, name: 'Demir Dumanlar', dept: 'YGCCC', position: 'Operations Slate', password: 'password123', role: 'employee', avatar: 'DD', clockIn: '09:00', clockOut: '17:00', status: 'clocked-out' },
+            { id: 10, name: 'Ann', dept: 'Finance', position: 'Accounting Lead', password: 'password123', role: 'employee', avatar: 'AN', clockIn: '09:00', clockOut: '17:00', status: 'clocked-out' },
+            { id: 11, name: 'Konstantin', dept: 'AHS', position: 'Co-founder & Project Lead', password: 'password123', role: 'admin', avatar: 'KN', clockIn: '08:45', clockOut: null, status: 'clocked-in' }
+        ];
+
+        let currentUser = null;
+        let userClockIn = null;
+        let userClockOut = null;
+        let editingEmployeeId = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            populateLoginSelect();
+            updateClock();
+            setInterval(updateClock, 1000);
+        });
+
+        function populateLoginSelect() {
+            const select = document.getElementById('loginSelect');
+            select.innerHTML = '<option value="">-- Choose Employee --</option>';
+            employees.forEach(emp => {
+                const option = document.createElement('option');
+                option.value = emp.id;
+                option.textContent = emp.name;
+                select.appendChild(option);
+            });
+        }
+
+        function updatePassword() {
+            const id = document.getElementById('loginSelect').value;
+            const emp = employees.find(e => e.id == id);
+            if (emp) {
+                document.getElementById('loginPassword').value = emp.password;
+            }
+        }
+
+        function login() {
+            const id = document.getElementById('loginSelect').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+
+            if (!id) {
+                errorDiv.textContent = 'Please select an employee';
+                errorDiv.classList.add('show');
+                return;
+            }
+
+            const emp = employees.find(e => e.id == id);
+            if (emp && emp.password === password) {
+                currentUser = emp;
+                showDashboard();
+                errorDiv.classList.remove('show');
+            } else {
+                errorDiv.textContent = 'Invalid credentials';
+                errorDiv.classList.add('show');
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginPage').classList.add('active');
+            document.getElementById('dashboardPage').classList.remove('active');
+            document.getElementById('loginSelect').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        function showDashboard() {
+            document.getElementById('loginPage').classList.remove('active');
+            document.getElementById('dashboardPage').classList.add('active');
+
+            document.getElementById('sidebarName').textContent = currentUser.name;
+            document.getElementById('sidebarRole').textContent = currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1);
+
+            if (currentUser.role === 'admin') {
+                document.getElementById('adminNav').style.display = 'block';
+            } else {
+                document.getElementById('adminNav').style.display = 'none';
+            }
+
+            switchSection('dashboard');
+            renderDashboard();
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+
+            const titles = {
+                dashboard: 'Dashboard',
+                clock: 'Clock In/Out',
+                employees: 'Employee Directory',
+                'manage-employees': 'Manage Employees',
+                'time-approvals': 'Clock Approvals'
+            };
+            document.getElementById('pageTitle').textContent = titles[sectionId];
+
+            if (sectionId === 'dashboard') renderDashboard();
+            if (sectionId === 'employees') renderEmployeeDirectory();
+            if (sectionId === 'manage-employees') renderAdminEmployeeTable();
+            if (sectionId === 'time-approvals') renderApprovalsTable();
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString();
+        }
+
+        function clockIn() {
+            userClockIn = new Date();
+            const emp = employees.find(e => e.id === currentUser.id);
+            emp.clockIn = userClockIn.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            emp.status = 'clocked-in';
+            document.getElementById('currentStatus').textContent = 'Clocked In';
+            document.getElementById('currentStatus').className = 'status-badge status-clocked-in';
+            document.getElementById('displayIn').textContent = emp.clockIn;
+            alert('✅ Clocked in at ' + userClockIn.toLocaleTimeString());
+            renderDashboard();
+        }
+
+        function clockOut() {
+            if (!userClockIn) {
+                alert('Please clock in first!');
+                return;
+            }
+            userClockOut = new Date();
+            const emp = employees.find(e => e.id === currentUser.id);
+            emp.clockOut = userClockOut.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            emp.status = 'clocked-out';
+            document.getElementById('currentStatus').textContent = 'Clocked Out';
+            document.getElementById('currentStatus').className = 'status-badge status-clocked-out';
+            document.getElementById('displayOut').textContent = emp.clockOut;
+
+            const hours = Math.floor((userClockOut - userClockIn) / 3600000);
+            const minutes = Math.floor(((userClockOut - userClockIn) % 3600000) / 60000);
+            document.getElementById('todayHours').textContent = `${hours}h ${minutes}m`;
+            alert('✅ Clocked out at ' + userClockOut.toLocaleTimeString());
+            renderDashboard();
+        }
+
+        function renderDashboard() {
+            const clockedIn = employees.filter(e => e.status === 'clocked-in').length;
+            const clockedOut = employees.filter(e => e.status === 'clocked-out').length;
+
+            document.getElementById('totalEmp').textContent = employees.length;
+            document.getElementById('clockedInCount').textContent = clockedIn;
+            document.getElementById('clockedOutCount').textContent = clockedOut;
+
+            const tbody = document.getElementById('statusTable');
+            tbody.innerHTML = employees.map(emp => {
+                const badgeClass = emp.status === 'clocked-in' ? 'badge-success' : 'badge-danger';
+                return `
+                    <tr>
+                        <td>${emp.name}</td>
+                        <td>${emp.dept}</td>
+                        <td><span class="badge ${badgeClass}">${emp.status === 'clocked-in' ? 'In' : 'Out'}</span></td>
+                        <td>${emp.clockIn || '--:--'}</td>
+                        <td>${emp.clockOut || '--:--'}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderEmployeeDirectory() {
+            const container = document.getElementById('employeeList');
+            container.innerHTML = employees.map(emp => `
+                <div class="employee-card">
+                    <div class="employee-info">
+                        <div class="avatar">${emp.avatar}</div>
+                        <div class="employee-details">
+                            <h3>${emp.name}</h3>
+                            <p>${emp.position} • ${emp.dept}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="badge ${emp.status === 'clocked-in' ? 'badge-success' : 'badge-danger'}">
+                            ${emp.status === 'clocked-in' ? 'Clocked In' : 'Clocked Out'}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderAdminEmployeeTable() {
+            const tbody = document.getElementById('adminEmployeeTable');
+            tbody.innerHTML = employees.map(emp => `
+                <tr>
+                    <td>${emp.name}</td>
+                    <td>${emp.dept}</td>
+                    <td>${emp.position}</td>
+                    <td>
+                        <div class="admin-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="openEditTimeModal(${emp.id})">Edit Time</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteEmployee(${emp.id})">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderApprovalsTable() {
+            const container = document.getElementById('approvalsTable');
+            const approvalsHtml = employees.map(emp => `
+                <div class="card" style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h3 style="margin-bottom: 5px;">${emp.name}</h3>
+                            <p style="color: #6b7280; font-size: 12px;">${emp.dept}</p>
+                            <p style="margin-top: 10px;">
+                                <strong>Clock In:</strong> ${emp.clockIn || 'Pending'} |
+                                <strong>Clock Out:</strong> ${emp.clockOut || 'Pending'}
+                            </p>
+                        </div>
+                        <div>
+                            <button class="btn btn-success btn-sm" onclick="approveTime(${emp.id})">Approve</button>
+                            <button class="btn btn-danger btn-sm" onclick="rejectTime(${emp.id})">Reject</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            container.innerHTML = approvalsHtml;
+        }
+
+        function openAddEmployeeModal() {
+            document.getElementById('addEmployeeModal').classList.add('active');
+        }
+
+        function closeAddEmployeeModal() {
+            document.getElementById('addEmployeeModal').classList.remove('active');
+        }
+
+        function addEmployee() {
+            const name = document.getElementById('empName').value;
+            const dept = document.getElementById('empDept').value;
+            const position = document.getElementById('empPosition').value;
+            const password = document.getElementById('empPassword').value;
+            const role = document.getElementById('empRole').value;
+
+            if (!name || !dept || !position) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            const newEmp = {
+                id: employees.length + 1,
+                name: name,
+                dept: dept,
+                position: position,
+                password: password || 'password123',
+                role: role,
+                avatar: name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2),
+                clockIn: null,
+                clockOut: null,
+                status: 'clocked-out'
+            };
+
+            employees.push(newEmp);
+            populateLoginSelect();
+            renderAdminEmployeeTable();
+            closeAddEmployeeModal();
+            alert('✅ Employee added successfully!');
+
+            document.getElementById('empName').value = '';
+            document.getElementById('empDept').value = '';
+            document.getElementById('empPosition').value = '';
+            document.getElementById('empPassword').value = '';
+        }
+
+        function deleteEmployee(id) {
+            if (confirm('Are you sure you want to delete this employee?')) {
+                employees = employees.filter(e => e.id !== id);
+                populateLoginSelect();
+                renderAdminEmployeeTable();
+                alert('✅ Employee deleted!');
+            }
+        }
+
+        function openEditTimeModal(id) {
+            editingEmployeeId = id;
+            const emp = employees.find(e => e.id === id);
+            document.getElementById('editEmpName').value = emp.name;
+            document.getElementById('editClockIn').value = emp.clockIn ? emp.clockIn.replace(/\s/g, '') : '';
+            document.getElementById('editClockOut').value = emp.clockOut ? emp.clockOut.replace(/\s/g, '') : '';
+            document.getElementById('editTimeModal').classList.add('active');
+        }
+
+        function closeEditTimeModal() {
+            document.getElementById('editTimeModal').classList.remove('active');
+        }
+
+        function saveClockTime() {
+            const emp = employees.find(e => e.id === editingEmployeeId);
+            const clockIn = document.getElementById('editClockIn').value;
+            const clockOut = document.getElementById('editClockOut').value;
+
+            if (clockIn) emp.clockIn = clockIn;
+            if (clockOut) emp.clockOut = clockOut;
+
+            closeEditTimeModal();
+            renderAdminEmployeeTable();
+            alert('✅ Clock times updated!');
+        }
+
+        function approveTime(id) {
+            alert('✅ Time approved for ' + employees.find(e => e.id === id).name);
+        }
+
+        function rejectTime(id) {
+            alert('❌ Time rejected for ' + employees.find(e => e.id === id).name);
+        }
+
+        window.onclick = (event) => {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        };
+    </script>
+</body>
+</html>
