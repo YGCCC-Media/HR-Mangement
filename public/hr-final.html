@@ -419,16 +419,6 @@ function initializeApp() {
     setInterval(updateClock, 1000);
 }
 
-// Try to initialize immediately
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeApp);
-} else {
-    initializeApp();
-}
-
-// Also try after a short delay to ensure DOM is ready
-setTimeout(initializeApp, 100);
-
 function handleLogin() {
     const empId = document.getElementById('employeeSelect').value;
     const password = document.getElementById('passwordInput').value;
@@ -897,6 +887,14 @@ window.onclick = (e) => {
     if (e.target === document.getElementById('addEmployeeModal')) closeAddEmployeeModal();
     if (e.target === document.getElementById('changePasswordModal')) closeChangePasswordModal();
 };
+
+// Initialize app when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+    initializeApp();
+}
+setTimeout(initializeApp, 50);
 </script>
 
 </body>
