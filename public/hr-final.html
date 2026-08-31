@@ -422,10 +422,17 @@ function showDashboard() {
     document.getElementById('loginPage').style.display = 'none';
     document.getElementById('dashboardPage').classList.add('active');
     document.getElementById('userName').textContent = currentUser.name;
-    document.getElementById('userRole').textContent = currentUser.role === 'admin' ? '👨‍💼 Admin' : '👤 Employee';
 
-    if (currentUser.role === 'admin') {
+    // STRICT ROLE ENFORCEMENT - ONLY 'admin' gets admin access
+    const isAdmin = currentUser && currentUser.role && currentUser.role.toLowerCase() === 'admin';
+    document.getElementById('userRole').textContent = isAdmin ? '👨‍💼 Admin' : '👤 Employee';
+
+    if (isAdmin) {
+        // ONLY admins can see admin panel
         document.getElementById('adminPanel').classList.add('active');
+    } else {
+        // Employees CANNOT see admin features
+        document.getElementById('adminPanel').classList.remove('active');
     }
 
     switchPage('dashboard');
@@ -753,7 +760,7 @@ function addNewEmployee() {
         name: name,
         dept: dept,
         position: position,
-        role: role,
+        role: role.toLowerCase(), // Enforce lowercase
         pass: pass,
         clockIn: '09:00',
         clockOut: null
@@ -761,7 +768,7 @@ function addNewEmployee() {
 
     employeeData.push(newEmp);
     populateEmployees();
-    alert('✅ Employee added: ' + name);
+    alert('✅ Employee added: ' + name + '\n👤 Role: ' + role.toUpperCase());
     closeAddEmployeeModal();
     renderManage();
 }
