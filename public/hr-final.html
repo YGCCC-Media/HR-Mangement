@@ -388,6 +388,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function populateEmployees() {
     const select = document.getElementById('employeeSelect');
+    // Clear all options except the first placeholder
+    while (select.options.length > 1) {
+        select.remove(1);
+    }
+    // Add fresh employee list
     employeeData.forEach(emp => {
         const opt = document.createElement('option');
         opt.value = emp.id;
