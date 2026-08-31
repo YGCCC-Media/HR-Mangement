@@ -771,9 +771,16 @@ function deleteEmployee(id) {
     if (!emp) return;
 
     if (confirm('Delete employee: ' + emp.name + '?')) {
+        // Check if deleted employee is currently logged in
+        if (currentUser && currentUser.id === id) {
+            alert('⚠️ Employee account deleted. You will be logged out.');
+            handleLogout();
+            return;
+        }
+
         employeeData.splice(employeeData.indexOf(emp), 1);
         populateEmployees();
-        alert('✅ Employee deleted');
+        alert('✅ Employee deleted: ' + emp.name);
         renderManage();
     }
 }
