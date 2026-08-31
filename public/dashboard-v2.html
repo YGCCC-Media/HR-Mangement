@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YGCCC Media - HR Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3b82f6;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f3f4f6;
+            --border: #e5e7eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        /* LOGIN PAGE */
+        .login-page {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, #1e3a8a 100%);
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-box h1 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .login-box p {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #7f1d1d;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .demo-info {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .demo-info strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* DASHBOARD */
+        .dashboard-page {
+            display: none;
+        }
+
+        .dashboard-page.active {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: var(--dark);
+            color: white;
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .user-info .name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            padding: 12px 16px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-btn.active {
+            background: var(--primary);
+        }
+
+        .admin-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+        }
+
+        .admin-section.active {
+            display: block;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: auto;
+            display: block;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 30px;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: var(--dark);
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            background: var(--light);
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:hover {
+            background: var(--light);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: #7f1d1d;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .btn-small.danger {
+            background: var(--danger);
+        }
+
+        .clock-display {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--dark);
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .btn-large {
+            padding: 12px 24px;
+            font-size: 16px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-large.danger {
+            background: var(--danger);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .main-content {
+                margin-left: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage" class="login-page">
+    <div class="login-box">
+        <h1>🏢 YGCCC Media</h1>
+        <p>HR Management System</p>
+
+        <div class="demo-info">
+            <strong>Demo Credentials:</strong>
+            All employees: <strong>password123</strong>
+        </div>
+
+        <div id="errorMsg" class="error"></div>
+
+        <div class="form-group">
+            <label>Select Employee:</label>
+            <select id="employeeSelect">
+                <option value="">-- Choose Employee --</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Password:</label>
+            <input type="password" id="passwordInput" value="password123">
+        </div>
+
+        <button class="btn btn-primary" onclick="handleLogin()">Sign In</button>
+    </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboardPage" class="dashboard-page">
+    <div class="sidebar">
+        <h2>📊 HR System</h2>
+
+        <div class="user-info">
+            <div class="name" id="userName">User</div>
+            <div id="userRole">Employee</div>
+        </div>
+
+        <nav class="nav">
+            <button class="nav-btn active" onclick="openSection('dashboard')">📊 Dashboard</button>
+            <button class="nav-btn" onclick="openSection('clock')">⏰ Clock In/Out</button>
+            <button class="nav-btn" onclick="openSection('employees')">👥 Employees</button>
+        </nav>
+
+        <div id="adminPanel" class="admin-section">
+            <div style="font-size: 12px; font-weight: 600; margin-bottom: 10px; opacity: 0.7;">ADMIN TOOLS</div>
+            <button class="nav-btn" onclick="openSection('add-employee')">➕ Add Employee</button>
+            <button class="nav-btn" onclick="openSection('manage')">✏️ Manage Employees</button>
+            <button class="nav-btn" onclick="openSection('approvals')">✅ Approvals</button>
+        </div>
+
+        <button class="logout-btn" onclick="handleLogout()">Logout</button>
+    </div>
+
+    <div class="main-content">
+        <h1 id="pageTitle">Dashboard</h1>
+
+        <!-- DASHBOARD SECTION -->
+        <div id="dashboard" class="section active">
+            <div class="grid">
+                <div class="stat-box">
+                    <div class="stat-label">Total Employees</div>
+                    <div class="stat-number" id="totalEmps">11</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Clocked In</div>
+                    <div class="stat-number" id="clockedIn">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Clocked Out</div>
+                    <div class="stat-number" id="clockedOut">0</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Team Status</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Position</th>
+                            <th>Status</th>
+                            <th>Clock In</th>
+                            <th>Clock Out</th>
+                        </tr>
+                    </thead>
+                    <tbody id="statusTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- CLOCK IN/OUT SECTION -->
+        <div id="clock" class="section">
+            <div class="card">
+                <h2>Clock In/Out</h2>
+                <div class="clock-display" id="currentTime">00:00:00</div>
+                <div style="text-align: center;">
+                    <button class="btn-large" onclick="handleClockIn()">✓ Clock In</button>
+                    <button class="btn-large danger" onclick="handleClockOut()">✕ Clock Out</button>
+                </div>
+                <div style="margin-top: 30px; padding: 20px; background: var(--light); border-radius: 8px;">
+                    <p><strong>Clock In Time:</strong> <span id="displayIn">--:--</span></p>
+                    <p><strong>Clock Out Time:</strong> <span id="displayOut">--:--</span></p>
+                    <p><strong>Hours Worked:</strong> <span id="hoursWorked">0h 0m</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- EMPLOYEES SECTION -->
+        <div id="employees" class="section">
+            <div class="card">
+                <h2>Employee Directory</h2>
+                <div id="employeeList"></div>
+            </div>
+        </div>
+
+        <!-- ADD EMPLOYEE (ADMIN) -->
+        <div id="add-employee" class="section">
+            <div class="card">
+                <h2>Add New Employee</h2>
+                <div class="form-group">
+                    <label>Full Name:</label>
+                    <input type="text" id="newName" placeholder="Full Name">
+                </div>
+                <div class="form-group">
+                    <label>Department:</label>
+                    <input type="text" id="newDept" placeholder="Department">
+                </div>
+                <div class="form-group">
+                    <label>Position:</label>
+                    <input type="text" id="newPosition" placeholder="Position">
+                </div>
+                <div class="form-group">
+                    <label>Role:</label>
+                    <select id="newRole">
+                        <option value="employee">Employee</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="handleAddEmployee()">Add Employee</button>
+            </div>
+        </div>
+
+        <!-- MANAGE EMPLOYEES (ADMIN) -->
+        <div id="manage" class="section">
+            <div class="card">
+                <h2>Manage Employees</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Position</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="manageTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- APPROVALS (ADMIN) -->
+        <div id="approvals" class="section">
+            <div class="card">
+                <h2>Clock Time Approvals</h2>
+                <div id="approvalsContent"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // EMPLOYEE DATA
+    const employeeData = [
+        { id: 1, name: 'George Yu', dept: 'Executive', position: 'CEO', role: 'admin', pass: 'password123', clockIn: '08:00', clockOut: '18:00', status: 'out' },
+        { id: 2, name: 'Lizzy Loren Jangao', dept: 'Finance', position: 'Accounting', role: 'employee', pass: 'password123', clockIn: '09:00', clockOut: '17:30', status: 'out' },
+        { id: 3, name: 'Karoline San Miguel', dept: 'YDS', position: 'Project Manager', role: 'employee', pass: 'password123', clockIn: '09:15', clockOut: null, status: 'in' },
+        { id: 4, name: 'Myka Hosmillo', dept: 'YD', position: 'Outreach', role: 'employee', pass: 'password123', clockIn: '08:45', clockOut: null, status: 'in' },
+        { id: 5, name: 'Muhammad Bin Taimur', dept: 'Engineering', position: 'Automations Engineer', role: 'employee', pass: 'password123', clockIn: '09:30', clockOut: '18:00', status: 'out' },
+        { id: 6, name: 'Himaja Kosaraju', dept: 'HR', position: 'HR Manager', role: 'admin', pass: 'password123', clockIn: '09:00', clockOut: null, status: 'in' },
+        { id: 7, name: 'Eryl Karl Agustin', dept: 'YDS & HR', position: 'Project Manager & HR', role: 'admin', pass: 'password123', clockIn: '09:45', clockOut: '17:45', status: 'out' },
+        { id: 8, name: 'Aditya Yata', dept: 'AHS', position: 'Project Manager', role: 'employee', pass: 'password123', clockIn: '08:30', clockOut: null, status: 'in' },
+        { id: 9, name: 'Demir Dumanlar', dept: 'YGCCC', position: 'Operations Slate', role: 'employee', pass: 'password123', clockIn: '09:00', clockOut: '17:00', status: 'out' },
+        { id: 10, name: 'Ann', dept: 'Finance', position: 'Accounting Lead', role: 'employee', pass: 'password123', clockIn: '09:00', clockOut: '17:00', status: 'out' },
+        { id: 11, name: 'Konstantin', dept: 'AHS', position: 'Co-founder & Project Lead', role: 'admin', pass: 'password123', clockIn: '08:45', clockOut: null, status: 'in' }
+    ];
+
+    let currentUser = null;
+    let userClockIn = null;
+    let userClockOut = null;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Page loaded');
+        populateEmployeeSelect();
+        updateClock();
+        setInterval(updateClock, 1000);
+    });
+
+    function populateEmployeeSelect() {
+        const select = document.getElementById('employeeSelect');
+        employeeData.forEach(emp => {
+            const option = document.createElement('option');
+            option.value = emp.id;
+            option.textContent = emp.name;
+            select.appendChild(option);
+        });
+    }
+
+    function handleLogin() {
+        const empId = document.getElementById('employeeSelect').value;
+        const password = document.getElementById('passwordInput').value;
+        const errorMsg = document.getElementById('errorMsg');
+
+        if (!empId) {
+            errorMsg.textContent = '⚠️ Please select an employee';
+            errorMsg.classList.add('show');
+            return;
+        }
+
+        const employee = employeeData.find(e => e.id == empId);
+
+        if (employee && employee.pass === password) {
+            currentUser = employee;
+            errorMsg.classList.remove('show');
+            showDashboard();
+        } else {
+            errorMsg.textContent = '❌ Invalid password';
+            errorMsg.classList.add('show');
+        }
+    }
+
+    function showDashboard() {
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('dashboardPage').classList.add('active');
+
+        document.getElementById('userName').textContent = currentUser.name;
+        document.getElementById('userRole').textContent = currentUser.role === 'admin' ? '👨‍💼 Admin' : '👤 Employee';
+
+        if (currentUser.role === 'admin') {
+            document.getElementById('adminPanel').classList.add('active');
+        } else {
+            document.getElementById('adminPanel').classList.remove('active');
+        }
+
+        openSection('dashboard');
+    }
+
+    function handleLogout() {
+        currentUser = null;
+        document.getElementById('dashboardPage').classList.remove('active');
+        document.getElementById('loginPage').style.display = 'flex';
+        document.getElementById('employeeSelect').value = '';
+        document.getElementById('passwordInput').value = 'password123';
+    }
+
+    function openSection(sectionId) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(sectionId).classList.add('active');
+        event.target.classList.add('active');
+
+        const titles = {
+            'dashboard': 'Dashboard',
+            'clock': 'Clock In/Out',
+            'employees': 'Employee Directory',
+            'add-employee': 'Add Employee',
+            'manage': 'Manage Employees',
+            'approvals': 'Clock Approvals'
+        };
+        document.getElementById('pageTitle').textContent = titles[sectionId];
+
+        if (sectionId === 'dashboard') renderDashboard();
+        if (sectionId === 'employees') renderEmployees();
+        if (sectionId === 'manage') renderManage();
+        if (sectionId === 'approvals') renderApprovals();
+    }
+
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('currentTime').textContent = now.toLocaleTimeString();
+    }
+
+    function handleClockIn() {
+        userClockIn = new Date();
+        const emp = employeeData.find(e => e.id === currentUser.id);
+        emp.clockIn = userClockIn.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        emp.status = 'in';
+        document.getElementById('displayIn').textContent = emp.clockIn;
+        alert('✅ Clocked in at ' + userClockIn.toLocaleTimeString());
+        renderDashboard();
+    }
+
+    function handleClockOut() {
+        if (!userClockIn) {
+            alert('⚠️ Please clock in first');
+            return;
+        }
+        userClockOut = new Date();
+        const emp = employeeData.find(e => e.id === currentUser.id);
+        emp.clockOut = userClockOut.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        emp.status = 'out';
+        document.getElementById('displayOut').textContent = emp.clockOut;
+
+        const hours = Math.floor((userClockOut - userClockIn) / 3600000);
+        const minutes = Math.floor(((userClockOut - userClockIn) % 3600000) / 60000);
+        document.getElementById('hoursWorked').textContent = hours + 'h ' + minutes + 'm';
+        alert('✅ Clocked out at ' + userClockOut.toLocaleTimeString());
+        renderDashboard();
+    }
+
+    function renderDashboard() {
+        const clockedIn = employeeData.filter(e => e.status === 'in').length;
+        const clockedOut = employeeData.filter(e => e.status === 'out').length;
+
+        document.getElementById('totalEmps').textContent = employeeData.length;
+        document.getElementById('clockedIn').textContent = clockedIn;
+        document.getElementById('clockedOut').textContent = clockedOut;
+
+        const tbody = document.getElementById('statusTable');
+        tbody.innerHTML = employeeData.map(emp => `
+            <tr>
+                <td>${emp.name}</td>
+                <td>${emp.dept}</td>
+                <td>${emp.position}</td>
+                <td><span class="badge ${emp.status === 'in' ? 'badge-success' : 'badge-danger'}">${emp.status === 'in' ? 'Clocked In' : 'Clocked Out'}</span></td>
+                <td>${emp.clockIn || '--:--'}</td>
+                <td>${emp.clockOut || '--:--'}</td>
+            </tr>
+        `).join('');
+    }
+
+    function renderEmployees() {
+        const container = document.getElementById('employeeList');
+        container.innerHTML = employeeData.map(emp => `
+            <div style="background: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="margin-bottom: 5px;">${emp.name}</h3>
+                    <p style="font-size: 12px; color: #6b7280;">${emp.position} • ${emp.dept}</p>
+                </div>
+                <span class="badge ${emp.status === 'in' ? 'badge-success' : 'badge-danger'}">${emp.status === 'in' ? 'In' : 'Out'}</span>
+            </div>
+        `).join('');
+    }
+
+    function renderManage() {
+        const tbody = document.getElementById('manageTable');
+        tbody.innerHTML = employeeData.map(emp => `
+            <tr>
+                <td>${emp.name}</td>
+                <td>${emp.dept}</td>
+                <td>${emp.position}</td>
+                <td>
+                    <button class="btn-small" onclick="editEmployee(${emp.id})">Edit</button>
+                    <button class="btn-small danger" onclick="deleteEmployee(${emp.id})">Delete</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function renderApprovals() {
+        const container = document.getElementById('approvalsContent');
+        const now = new Date();
+        const todayDate = now.toLocaleDateString();
+
+        container.innerHTML = employeeData.map(emp => {
+            let hoursWorked = '--';
+            if (emp.clockIn && emp.clockOut) {
+                const inTime = new Date('2024-01-01 ' + emp.clockIn);
+                const outTime = new Date('2024-01-01 ' + emp.clockOut);
+                const hours = Math.floor((outTime - inTime) / 3600000);
+                const minutes = Math.floor(((outTime - inTime) % 3600000) / 60000);
+                hoursWorked = hours + 'h ' + minutes + 'm';
+            }
+
+            return `
+                <div style="background: white; padding: 20px; margin-bottom: 15px; border-radius: 8px; border: 1px solid var(--border);">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div style="flex: 1;">
+                            <h3 style="margin-bottom: 10px; font-size: 16px;">${emp.name}</h3>
+                            <div style="background: var(--light); padding: 12px; border-radius: 6px; margin-bottom: 10px; font-size: 13px;">
+                                <p><strong>Department:</strong> ${emp.dept}</p>
+                                <p><strong>Position:</strong> ${emp.position}</p>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 13px;">
+                                <div>
+                                    <p><strong>📍 Clock In Time:</strong></p>
+                                    <p style="color: var(--primary); font-weight: 600;">${emp.clockIn || '⏳ Pending'}</p>
+                                </div>
+                                <div>
+                                    <p><strong>📍 Clock Out Time:</strong></p>
+                                    <p style="color: var(--primary); font-weight: 600;">${emp.clockOut || '⏳ Pending'}</p>
+                                </div>
+                                <div>
+                                    <p><strong>⏱️ Hours Worked:</strong></p>
+                                    <p style="color: var(--secondary); font-weight: 600;">${hoursWorked}</p>
+                                </div>
+                                <div>
+                                    <p><strong>📅 Request Date:</strong></p>
+                                    <p style="color: var(--dark); font-weight: 600;">${todayDate}</p>
+                                </div>
+                            </div>
+                            <div style="margin-top: 10px; font-size: 12px; color: #9ca3af;">
+                                <p>⏰ Request submitted at: ${now.toLocaleTimeString()}</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 8px; margin-left: 20px;">
+                            <button class="btn-small" onclick="approveTime(${emp.id})" style="background: var(--secondary); width: 100px;">✓ Approve</button>
+                            <button class="btn-small danger" onclick="rejectTime(${emp.id})" style="width: 100px;">✕ Reject</button>
+                            <button class="btn-small" onclick="editTime(${emp.id})" style="background: var(--warning); color: white; width: 100px;">✏️ Edit</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function handleAddEmployee() {
+        const name = document.getElementById('newName').value;
+        const dept = document.getElementById('newDept').value;
+        const position = document.getElementById('newPosition').value;
+        const role = document.getElementById('newRole').value;
+
+        if (!name || !dept || !position) {
+            alert('⚠️ Please fill in all fields');
+            return;
+        }
+
+        const newEmp = {
+            id: Math.max(...employeeData.map(e => e.id)) + 1,
+            name, dept, position, role,
+            pass: 'password123',
+            clockIn: null,
+            clockOut: null,
+            status: 'out'
+        };
+
+        employeeData.push(newEmp);
+        alert('✅ Employee added!');
+        document.getElementById('newName').value = '';
+        document.getElementById('newDept').value = '';
+        document.getElementById('newPosition').value = '';
+    }
+
+    function editEmployee(id) {
+        alert('✏️ Edit feature for employee ' + id);
+    }
+
+    function deleteEmployee(id) {
+        if (confirm('Delete this employee?')) {
+            const index = employeeData.findIndex(e => e.id === id);
+            employeeData.splice(index, 1);
+            alert('✅ Employee deleted!');
+            renderManage();
+        }
+    }
+
+    function approveTime(id) {
+        const emp = employeeData.find(e => e.id === id);
+        const now = new Date();
+        alert('✅ Time approved for ' + emp.name + '\n\nApproved at: ' + now.toLocaleTimeString());
+    }
+
+    function rejectTime(id) {
+        const emp = employeeData.find(e => e.id === id);
+        const now = new Date();
+        alert('❌ Time rejected for ' + emp.name + '\n\nRejected at: ' + now.toLocaleTimeString());
+    }
+
+    function editTime(id) {
+        const emp = employeeData.find(e => e.id === id);
+        const newIn = prompt('Enter Clock In time (HH:MM):', emp.clockIn || '09:00');
+        if (newIn) {
+            emp.clockIn = newIn;
+            const newOut = prompt('Enter Clock Out time (HH:MM):', emp.clockOut || '17:00');
+            if (newOut) {
+                emp.clockOut = newOut;
+                alert('✅ Clock times updated for ' + emp.name);
+                renderApprovals();
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
