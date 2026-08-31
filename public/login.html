@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YGCCC HR Login</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .box { background: white; padding: 50px; border-radius: 10px; width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        h1 { text-align: center; margin-bottom: 30px; }
+        .group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
+        button { width: 100%; padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #2563eb; }
+        .msg { padding: 10px; margin: 10px 0; border-radius: 5px; display: none; }
+        .info { background: #dbeafe; color: #1e40af; padding: 10px; border-radius: 5px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h1>🏢 YGCCC Media HR</h1>
+
+    <div class="info">Password: <strong>password123</strong> for all</div>
+
+    <div id="msg" class="msg"></div>
+
+    <div class="group">
+        <label>Select Employee:</label>
+        <select id="select">
+            <option value="">-- Click to see employees --</option>
+        </select>
+    </div>
+
+    <div class="group">
+        <label>Password:</label>
+        <input type="password" id="pass" value="password123">
+    </div>
+
+    <button onclick="login()">Sign In</button>
+    <button style="background: #10b981; margin-top: 5px;" onclick="testLoaded()">Test (Shows Count)</button>
+</div>
+
+<script>
+const data = [
+    { id: 1, name: 'George Yu', role: 'admin' },
+    { id: 2, name: 'Lizzy Loren Jangao', role: 'employee' },
+    { id: 3, name: 'Karoline San Miguel', role: 'employee' },
+    { id: 4, name: 'Myka Hosmillo', role: 'employee' },
+    { id: 5, name: 'Muhammad Bin Taimur', role: 'employee' },
+    { id: 6, name: 'HR Manager', role: 'admin' },
+    { id: 7, name: 'Eryl Karl Agustin', role: 'employee' },
+    { id: 8, name: 'Aditya Yata', role: 'employee' },
+    { id: 9, name: 'Demir Dumanlar', role: 'employee' },
+    { id: 10, name: 'Ann', role: 'employee' },
+    { id: 11, name: 'Konstantin', role: 'admin' }
+];
+
+function show(text, color) {
+    const m = document.getElementById('msg');
+    m.textContent = text;
+    m.style.background = color;
+    m.style.display = 'block';
+}
+
+function populate() {
+    const s = document.getElementById('select');
+    data.forEach(e => {
+        const o = document.createElement('option');
+        o.value = e.id;
+        o.textContent = e.name;
+        s.appendChild(o);
+    });
+}
+
+function login() {
+    const eid = document.getElementById('select').value;
+    const pass = document.getElementById('pass').value;
+    if (!eid) { show('Select employee', '#fee2e2'); return; }
+    const emp = data.find(e => e.id == eid);
+    if (emp && emp.pass === pass) {
+        show('✅ Welcome ' + emp.name, '#d1fae5');
+    } else if (emp) {
+        show('❌ Wrong password', '#fee2e2');
+    }
+}
+
+function testLoaded() {
+    show('✅ ' + data.length + ' employees loaded!', '#d1fae5');
+    alert('Employees loaded: ' + data.length);
+}
+
+populate();
+show('✅ ' + data.length + ' employees loaded', '#d1fae5');
+</script>
+
+</body>
+</html>
