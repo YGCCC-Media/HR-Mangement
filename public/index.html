@@ -283,17 +283,21 @@ function populateEmployees() {
 }
 
 function handleLogin() {
-    const empId = document.getElementById('employeeSelect').value;
+    const empId = parseInt(document.getElementById('employeeSelect').value);
     const password = document.getElementById('passwordInput').value;
     const errorMsg = document.getElementById('errorMsg');
 
-    if (!empId) {
+    console.log('Login attempt - ID:', empId, 'Password:', password);
+
+    if (!empId || empId === 0) {
         errorMsg.textContent = '⚠️ Please select an employee';
         errorMsg.classList.add('show');
         return;
     }
 
-    const emp = employeeData.find(e => e.id == empId);
+    const emp = employeeData.find(e => e.id === empId);
+    console.log('Found employee:', emp);
+
     if (emp && emp.pass === password) {
         currentUser = emp;
         errorMsg.classList.remove('show');
