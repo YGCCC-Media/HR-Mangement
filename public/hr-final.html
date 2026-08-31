@@ -229,8 +229,9 @@
         <div id="manage" class="section">
             <div class="card">
                 <h2>Manage Employees</h2>
+                <button class="btn btn-primary" style="margin-bottom: 20px; width: auto; padding: 10px 20px;" onclick="openAddEmployeeModal()">+ Add Employee</button>
                 <table>
-                    <thead><tr><th>Name</th><th>Department</th><th>Position</th><th>Role</th></tr></thead>
+                    <thead><tr><th>Name</th><th>Department</th><th>Position</th><th>Role</th><th>Actions</th></tr></thead>
                     <tbody id="manageTable"></tbody>
                 </table>
             </div>
@@ -291,6 +292,44 @@
             <button class="btn btn-primary" style="width: auto; background: var(--danger);" onclick="closeApprovalModal()">Cancel</button>
             <button class="btn btn-primary" style="width: auto; background: var(--danger);" onclick="rejectLeaveRequest()">Reject</button>
             <button class="btn btn-primary" style="width: auto; background: var(--secondary);" onclick="approveLeaveRequest()">Approve</button>
+        </div>
+    </div>
+</div>
+
+<!-- ADD EMPLOYEE MODAL -->
+<div id="addEmployeeModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">Add New Employee</div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Full Name:</label>
+                <input type="text" id="empName" placeholder="Employee Name">
+            </div>
+            <div class="form-group">
+                <label>Department:</label>
+                <input type="text" id="empDept" placeholder="Department">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Position:</label>
+                <input type="text" id="empPosition" placeholder="Position">
+            </div>
+            <div class="form-group">
+                <label>Role:</label>
+                <select id="empRole">
+                    <option value="employee">Employee</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group form-full">
+            <label>Password (Default: password123):</label>
+            <input type="text" id="empPassword" placeholder="password123" value="password123">
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" style="width: auto;" onclick="closeAddEmployeeModal()">Cancel</button>
+            <button class="btn btn-primary" style="width: auto; background: var(--secondary);" onclick="addNewEmployee()">Add Employee</button>
         </div>
     </div>
 </div>
@@ -648,13 +687,76 @@ function renderManagerApprovals() {
 function renderManage() {
     const tbody = document.getElementById('manageTable');
     tbody.innerHTML = employeeData.map(e => `
-        <tr><td>${e.name}</td><td>${e.dept}</td><td>${e.position}</td><td>${e.role}</td></tr>
+        <tr>
+            <td>${e.name}</td>
+            <td>${e.dept}</td>
+            <td>${e.position}</td>
+            <td><span class="badge ${e.role === 'admin' ? 'badge-warning' : 'badge-info'}">${e.role}</span></td>
+            <td><button class="btn-small danger" onclick="deleteEmployee(${e.id})">Delete</button></td>
+        </tr>
     `).join('');
+}
+
+function openAddEmployeeModal() {
+    document.getElementById('addEmployeeModal').classList.add('active');
+    document.getElementById('empName').value = '';
+    document.getElementById('empDept').value = '';
+    document.getElementById('empPosition').value = '';
+    document.getElementById('empRole').value = 'employee';
+    document.getElementById('empPassword').value = 'password123';
+}
+
+function closeAddEmployeeModal() {
+    document.getElementById('addEmployeeModal').classList.remove('active');
+}
+
+function addNewEmployee() {
+    const name = document.getElementById('empName').value.trim();
+    const dept = document.getElementById('empDept').value.trim();
+    const position = document.getElementById('empPosition').value.trim();
+    const role = document.getElementById('empRole').value;
+    const pass = document.getElementById('empPassword').value || 'password123';
+
+    if (!name || !dept || !position) {
+        alert('⚠️ Please fill in all fields');
+        return;
+    }
+
+    const newId = Math.max(...employeeData.map(e => e.id)) + 1;
+    const newEmp = {
+        id: newId,
+        name: name,
+        dept: dept,
+        position: position,
+        role: role,
+        pass: pass,
+        clockIn: '09:00',
+        clockOut: null
+    };
+
+    employeeData.push(newEmp);
+    populateEmployees();
+    alert('✅ Employee added: ' + name);
+    closeAddEmployeeModal();
+    renderManage();
+}
+
+function deleteEmployee(id) {
+    const emp = employeeData.find(e => e.id === id);
+    if (!emp) return;
+
+    if (confirm('Delete employee: ' + emp.name + '?')) {
+        employeeData.splice(employeeData.indexOf(emp), 1);
+        populateEmployees();
+        alert('✅ Employee deleted');
+        renderManage();
+    }
 }
 
 window.onclick = (e) => {
     if (e.target === document.getElementById('requestModal')) closeRequestModal();
     if (e.target === document.getElementById('approvalModal')) closeApprovalModal();
+    if (e.target === document.getElementById('addEmployeeModal')) closeAddEmployeeModal();
 };
 </script>
 
