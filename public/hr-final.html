@@ -100,6 +100,7 @@
         <h1>🏢 YGCCC Media</h1>
         <p>HR Management System</p>
         <div class="info-box"><strong>Password:</strong> password123 for all</div>
+        <div id="statusMsg" style="background: #dbeafe; color: #1e40af; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; text-align: center;">Loading employees...</div>
         <div id="errorMsg" class="error"></div>
         <div class="form-group">
             <label>Select Employee:</label>
@@ -382,8 +383,11 @@ let editingRequestId = null;
 
 function populateEmployees() {
     const select = document.getElementById('employeeSelect');
+    const statusMsg = document.getElementById('statusMsg');
+
     if (!select) {
-        console.error('Employee select element not found');
+        console.error('❌ Employee select element not found');
+        if (statusMsg) statusMsg.innerHTML = '❌ Error loading employees (element not found)';
         return;
     }
 
@@ -401,24 +405,29 @@ function populateEmployees() {
             select.appendChild(opt);
         });
         console.log('✅ Loaded ' + employeeData.length + ' employees');
+        if (statusMsg) statusMsg.innerHTML = '✅ ' + employeeData.length + ' employees loaded';
     } else {
-        console.error('No employee data available');
+        console.error('❌ No employee data available');
+        if (statusMsg) statusMsg.innerHTML = '❌ No employees found';
     }
 }
 
-// Initialize immediately when script loads
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        populateEmployees();
-        updateClock();
-        setInterval(updateClock, 1000);
-    });
-} else {
-    // If script loads after DOM is ready
+// Initialize on page load
+function initializeApp() {
     populateEmployees();
     updateClock();
     setInterval(updateClock, 1000);
 }
+
+// Try to initialize immediately
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+    initializeApp();
+}
+
+// Also try after a short delay to ensure DOM is ready
+setTimeout(initializeApp, 100);
 
 function handleLogin() {
     const empId = document.getElementById('employeeSelect').value;
