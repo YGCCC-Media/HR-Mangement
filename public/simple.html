@@ -1,0 +1,45 @@
+<html>
+<head>
+<title>HR Login</title>
+<style>
+body { font-family: Arial; background: #3b82f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+.box { background: white; padding: 30px; border-radius: 10px; width: 350px; }
+h1 { text-align: center; }
+input, select { width: 100%; padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+button { width: 100%; padding: 10px; background: #3b82f6; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<div class="box">
+<h1>HR System</h1>
+<p style="text-align: center; color: #666;">Password: password123</p>
+
+<select id="emp">
+<option>-- Select --</option>
+<option>George Yu</option>
+<option>Lizzy Loren Jangao</option>
+<option>Karoline San Miguel</option>
+<option>Myka Hosmillo</option>
+<option>Muhammad Bin Taimur</option>
+<option>HR Manager</option>
+<option>Eryl Karl Agustin</option>
+<option>Aditya Yata</option>
+<option>Demir Dumanlar</option>
+<option>Ann</option>
+<option>Konstantin</option>
+</select>
+
+<input type="password" id="pwd" value="password123" placeholder="Password">
+
+<button onclick="go()">Login</button>
+</div>
+
+<script>
+function go() {
+  alert('Login clicked!');
+}
+</script>
+
+</body>
+</html>
