@@ -128,6 +128,7 @@
             <button class="nav-btn active" onclick="switchPage('dashboard')">📊 Dashboard</button>
             <button class="nav-btn" onclick="switchPage('timeoff')">🗓️ Time Off</button>
             <button class="nav-btn" onclick="switchPage('clock')">⏰ Clock In/Out</button>
+            <button class="nav-btn" onclick="openChangePasswordModal()">🔐 Change Password</button>
         </nav>
 
         <div id="adminPanel" class="admin-section">
@@ -330,6 +331,30 @@
         <div class="modal-footer">
             <button class="btn btn-primary" style="width: auto;" onclick="closeAddEmployeeModal()">Cancel</button>
             <button class="btn btn-primary" style="width: auto; background: var(--secondary);" onclick="addNewEmployee()">Add Employee</button>
+        </div>
+    </div>
+</div>
+
+<!-- CHANGE PASSWORD MODAL -->
+<div id="changePasswordModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">🔐 Change Password</div>
+        <div class="form-group form-full">
+            <label>Current Password:</label>
+            <input type="password" id="currentPassword" placeholder="Enter current password">
+        </div>
+        <div class="form-group form-full">
+            <label>New Password:</label>
+            <input type="password" id="newPassword" placeholder="Enter new password">
+        </div>
+        <div class="form-group form-full">
+            <label>Confirm New Password:</label>
+            <input type="password" id="confirmPassword" placeholder="Confirm new password">
+        </div>
+        <div id="passwordError" class="error" style="margin-top: 15px;"></div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" style="width: auto;" onclick="closeChangePasswordModal()">Cancel</button>
+            <button class="btn btn-primary" style="width: auto; background: var(--secondary);" onclick="submitPasswordChange()">Change Password</button>
         </div>
     </div>
 </div>
@@ -753,10 +778,65 @@ function deleteEmployee(id) {
     }
 }
 
+function openChangePasswordModal() {
+    document.getElementById('changePasswordModal').classList.add('active');
+    document.getElementById('currentPassword').value = '';
+    document.getElementById('newPassword').value = '';
+    document.getElementById('confirmPassword').value = '';
+    document.getElementById('passwordError').classList.remove('show');
+}
+
+function closeChangePasswordModal() {
+    document.getElementById('changePasswordModal').classList.remove('active');
+}
+
+function submitPasswordChange() {
+    const currentPass = document.getElementById('currentPassword').value;
+    const newPass = document.getElementById('newPassword').value;
+    const confirmPass = document.getElementById('confirmPassword').value;
+    const errorDiv = document.getElementById('passwordError');
+
+    // Validation
+    if (!currentPass || !newPass || !confirmPass) {
+        errorDiv.textContent = '⚠️ All fields are required';
+        errorDiv.classList.add('show');
+        return;
+    }
+
+    if (currentPass !== currentUser.pass) {
+        errorDiv.textContent = '❌ Current password is incorrect';
+        errorDiv.classList.add('show');
+        return;
+    }
+
+    if (newPass !== confirmPass) {
+        errorDiv.textContent = '❌ New passwords do not match';
+        errorDiv.classList.add('show');
+        return;
+    }
+
+    if (newPass.length < 6) {
+        errorDiv.textContent = '⚠️ New password must be at least 6 characters';
+        errorDiv.classList.add('show');
+        return;
+    }
+
+    // Update password
+    currentUser.pass = newPass;
+    const emp = employeeData.find(e => e.id === currentUser.id);
+    if (emp) {
+        emp.pass = newPass;
+    }
+
+    alert('✅ Password changed successfully!');
+    closeChangePasswordModal();
+}
+
 window.onclick = (e) => {
     if (e.target === document.getElementById('requestModal')) closeRequestModal();
     if (e.target === document.getElementById('approvalModal')) closeApprovalModal();
     if (e.target === document.getElementById('addEmployeeModal')) closeAddEmployeeModal();
+    if (e.target === document.getElementById('changePasswordModal')) closeChangePasswordModal();
 };
 </script>
 
