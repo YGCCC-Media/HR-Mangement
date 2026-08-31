@@ -1,17 +1,17 @@
 // Sample Data
 let employees = [
-    { id: 1, name: 'George Yu', email: 'george.yu@ygccc.com', position: 'CEO', dept: 'Executive', vacationDays: 25, avatar: 'GY', clockIn: '08:00', clockOut: '18:00', status: 'clocked-out' },
-    { id: 2, name: 'Lizzy Loren Jangao', email: 'lizzy.jangao@ygccc.com', position: 'Project Manager', dept: 'Operations', vacationDays: 20, avatar: 'LJ', clockIn: '09:00', clockOut: '17:30', status: 'clocked-out' },
-    { id: 3, name: 'Karoline San Miguel', email: 'karoline.miguel@ygccc.com', position: 'Marketing Specialist', dept: 'Marketing', vacationDays: 20, avatar: 'KM', clockIn: '09:15', clockOut: null, status: 'clocked-in' },
-    { id: 4, name: 'Myka Hosmillo', email: 'myka.hosmillo@ygccc.com', position: 'Designer', dept: 'Marketing', vacationDays: 18, avatar: 'MH', clockIn: '08:45', clockOut: null, status: 'clocked-in' },
-    { id: 5, name: 'Muhammad Bin Taimur', email: 'muhammad.taimur@ygccc.com', position: 'Developer', dept: 'Engineering', vacationDays: 20, avatar: 'MT', clockIn: '09:30', clockOut: '18:00', status: 'clocked-out' },
-    { id: 6, name: 'Himaja Kosaraju', email: 'himaja.kosaraju@ygccc.com', position: 'Senior Developer', dept: 'Engineering', vacationDays: 22, avatar: 'HK', clockIn: '09:00', clockOut: null, status: 'clocked-in' },
-    { id: 7, name: 'Eryl Karl Agustin', email: 'eryl.agustin@ygccc.com', position: 'QA Engineer', dept: 'Engineering', vacationDays: 20, avatar: 'EA', clockIn: '09:45', clockOut: '17:45', status: 'clocked-out' },
-    { id: 8, name: 'Aditya Yata', email: 'aditya.yata@ygccc.com', position: 'Business Analyst', dept: 'Operations', vacationDays: 20, avatar: 'AY', clockIn: '08:30', clockOut: null, status: 'clocked-in' },
-    { id: 9, name: 'Demir Dumanlar', email: 'demir.dumanlar@ygccc.com', position: 'Sales Representative', dept: 'Sales', vacationDays: 19, avatar: 'DD', clockIn: '09:00', clockOut: '17:00', status: 'clocked-out' },
-    { id: 10, name: 'Israela Joy Dagami', email: 'israela.dagami@ygccc.com', position: 'HR Coordinator', dept: 'HR', vacationDays: 20, avatar: 'ID', clockIn: null, clockOut: null, status: 'timeoff' },
-    { id: 11, name: 'Ann', email: 'ann@ygccc.com', position: 'Administrative Assistant', dept: 'HR', vacationDays: 20, avatar: 'AN', clockIn: '09:00', clockOut: '17:00', status: 'clocked-out' },
-    { id: 12, name: 'Konstantin', email: 'konstantin@ahs.com', position: 'Project Lead - AHS', dept: 'AHS', vacationDays: 22, avatar: 'KN', clockIn: '08:45', clockOut: null, status: 'clocked-in' }
+    { id: 1, name: 'George Yu', email: '', position: 'CEO', dept: 'Executive', vacationDays: 25, avatar: 'GY', clockIn: '08:00', clockOut: '18:00', status: 'clocked-out' },
+    { id: 2, name: 'Lizzy Loren Jangao', email: '', position: 'Project Manager', dept: 'Operations', vacationDays: 20, avatar: 'LJ', clockIn: '09:00', clockOut: '17:30', status: 'clocked-out' },
+    { id: 3, name: 'Karoline San Miguel', email: '', position: 'Marketing Specialist', dept: 'Marketing', vacationDays: 20, avatar: 'KM', clockIn: '09:15', clockOut: null, status: 'clocked-in' },
+    { id: 4, name: 'Myka Hosmillo', email: '', position: 'Designer', dept: 'Marketing', vacationDays: 18, avatar: 'MH', clockIn: '08:45', clockOut: null, status: 'clocked-in' },
+    { id: 5, name: 'Muhammad Bin Taimur', email: '', position: 'Developer', dept: 'Engineering', vacationDays: 20, avatar: 'MT', clockIn: '09:30', clockOut: '18:00', status: 'clocked-out' },
+    { id: 6, name: 'Himaja Kosaraju', email: '', position: 'Senior Developer', dept: 'Engineering', vacationDays: 22, avatar: 'HK', clockIn: '09:00', clockOut: null, status: 'clocked-in' },
+    { id: 7, name: 'Eryl Karl Agustin', email: '', position: 'QA Engineer', dept: 'Engineering', vacationDays: 20, avatar: 'EA', clockIn: '09:45', clockOut: '17:45', status: 'clocked-out' },
+    { id: 8, name: 'Aditya Yata', email: '', position: 'Business Analyst', dept: 'Operations', vacationDays: 20, avatar: 'AY', clockIn: '08:30', clockOut: null, status: 'clocked-in' },
+    { id: 9, name: 'Demir Dumanlar', email: '', position: 'Sales Representative', dept: 'Sales', vacationDays: 19, avatar: 'DD', clockIn: '09:00', clockOut: '17:00', status: 'clocked-out' },
+    { id: 10, name: 'Israela Joy Dagami', email: '', position: 'HR Coordinator', dept: 'HR', vacationDays: 20, avatar: 'ID', clockIn: null, clockOut: null, status: 'timeoff' },
+    { id: 11, name: 'Ann', email: '', position: 'Administrative Assistant', dept: 'HR', vacationDays: 20, avatar: 'AN', clockIn: '09:00', clockOut: '17:00', status: 'clocked-out' },
+    { id: 12, name: 'Konstantin', email: '', position: 'Project Lead - AHS', dept: 'AHS', vacationDays: 22, avatar: 'KN', clockIn: '08:45', clockOut: null, status: 'clocked-in' }
 ];
 
 let timeOffs = [
