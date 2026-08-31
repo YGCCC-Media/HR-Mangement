@@ -380,25 +380,44 @@ let userClockIn = null;
 let userClockOut = null;
 let editingRequestId = null;
 
-document.addEventListener('DOMContentLoaded', () => {
-    populateEmployees();
-    updateClock();
-    setInterval(updateClock, 1000);
-});
-
 function populateEmployees() {
     const select = document.getElementById('employeeSelect');
+    if (!select) {
+        console.error('Employee select element not found');
+        return;
+    }
+
     // Clear all options except the first placeholder
     while (select.options.length > 1) {
         select.remove(1);
     }
+
     // Add fresh employee list
-    employeeData.forEach(emp => {
-        const opt = document.createElement('option');
-        opt.value = emp.id;
-        opt.textContent = emp.name;
-        select.appendChild(opt);
+    if (employeeData && employeeData.length > 0) {
+        employeeData.forEach(emp => {
+            const opt = document.createElement('option');
+            opt.value = emp.id;
+            opt.textContent = emp.name;
+            select.appendChild(opt);
+        });
+        console.log('✅ Loaded ' + employeeData.length + ' employees');
+    } else {
+        console.error('No employee data available');
+    }
+}
+
+// Initialize immediately when script loads
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        populateEmployees();
+        updateClock();
+        setInterval(updateClock, 1000);
     });
+} else {
+    // If script loads after DOM is ready
+    populateEmployees();
+    updateClock();
+    setInterval(updateClock, 1000);
 }
 
 function handleLogin() {
